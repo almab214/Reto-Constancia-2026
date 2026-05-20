@@ -186,6 +186,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   <button class="nav-btn" onclick="go('semana',this)"><i class="ti ti-calendar-week"></i>Semana</button>
   <button class="nav-btn" onclick="go('sanciones',this)"><i class="ti ti-coin"></i>Sanciones</button>
   <button class="nav-btn" onclick="go('pagos',this)"><i class="ti ti-cash"></i>Pagos</button>
+  <button class="nav-btn" onclick="go('salidas',this)"><i class="ti ti-door-exit"></i>Bajas</button>
   <button class="nav-btn" onclick="go('reglas',this)"><i class="ti ti-book"></i>Reglas</button>
 </nav>
 
@@ -272,6 +273,17 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   <div id="pagos-content"></div>
 </div>
 
+<!-- SALIDAS -->
+<div id="screen-salidas" class="screen">
+  <div class="page-title">Bajas y salidas anticipadas</div>
+  <div class="card" style="background:var(--red-light);border-color:#F09595;margin-bottom:10px">
+    <div style="font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Sanción por salida anticipada</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--red)" id="salidas-total">$0</div>
+    <div style="font-size:11px;color:var(--red);opacity:.7">suma directo a la bolsa · $1,000 por persona</div>
+  </div>
+  <div class="card" id="salidas-content"></div>
+</div>
+
 <!-- REGLAS -->
 <div id="screen-reglas" class="screen">
   <div class="page-title">Reglas oficiales</div>
@@ -335,6 +347,7 @@ let state={
   members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Analí','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodríguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
   entries:[],
   pagos:{},
+  salidas:{},
   currentWeek:1,
   selectedType:'Carrera',
   evidenceData:null,
@@ -370,7 +383,16 @@ function toast(msg,ok=true){
 }
 function getEntry(m,w,d){return state.entries.find(e=>e.participante===m&&+e.semana===w&&+e.dia===d);}
 function diasCumplidos(m,w){let ok=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&e.status==='Completado')ok++;}return ok;}
-function diasFalta(m,w){return Math.max(0,MIN_DIAS-diasCumplidos(m,w));}
+function diasConFalta(m,w){let f=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inválido','Sospechoso','Sin Registro'].includes(e.status))f++;}return f;}
+function diasFalta(m,w){
+  // Solo cuenta faltas explícitas (registros marcados como no completados)
+  let faltas=0;
+  for(let d=0;d<7;d++){
+    const e=getEntry(m,w,d);
+    if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status))faltas++;
+  }
+  return faltas;
+}
 function isPagada(m,w){for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&e.status==='Sansión Pagada')return true;}return false;}
 function totalFaltas(m){let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);return f;}
 function totalSancion(m){return totalFaltas(m)*SANCION;}
@@ -381,8 +403,9 @@ function totalPagosMensuales(){
   });
   return t;
 }
-function bolsaTotal(){return totalSancion_global()+totalPagosMensuales()+state.members.length*INSCRIPCION;}
+function bolsaTotal(){return totalSancion_global()+totalPagosMensuales()+totalSalidasAnticipadas();}
 function totalSancion_global(){let t=0;state.members.forEach(m=>t+=totalSancion(m));return t;}
+function totalSalidasAnticipadas(){return Object.values(state.salidas).filter(s=>s).length*1000;}
 
 function buildTypeGrid(){
   document.getElementById('type-grid').innerHTML=TIPOS.map(t=>
@@ -477,6 +500,7 @@ function go(id,btn){
   if(id==='semana')renderSemana();
   if(id==='sanciones')renderSanciones();
   if(id==='pagos')renderPagos();
+  if(id==='salidas')renderSalidas();
 }
 
 /* MODAL */
@@ -591,7 +615,7 @@ function renderSanciones(){
   });
   const totalSanc=totalSancion_global();
   const totalPagos=totalPagosMensuales();
-  const bolsa=totalSanc+totalPagos+state.members.length*INSCRIPCION;
+  const bolsa=bolsaTotal();
 
   const porMember=state.members.map((m,mi)=>{
     const sancion=totalSancion(m);
@@ -603,7 +627,7 @@ function renderSanciones(){
       <div>
         <div class="bolsa-label">Bolsa acumulada</div>
         <div class="bolsa-amount">$${bolsa.toLocaleString()}</div>
-        <div class="bolsa-sublabel">inscripciones + sanciones + pagos mensuales</div>
+        <div class="bolsa-sublabel">sanciones + pagos mensuales + bajas</div>
       </div>
       <i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i>
     </div>
@@ -668,6 +692,38 @@ function renderPagos(){
     </div>`;
   });
   document.getElementById('pagos-content').innerHTML=html;
+}
+
+function toggleSalida(member){
+  const k=member;
+  if(state.salidas[k]){
+    delete state.salidas[k];
+  } else {
+    state.salidas[k]={fecha:new Date().toISOString().split('T')[0]};
+  }
+  renderSalidas();
+  renderSanciones();
+}
+
+function renderSalidas(){
+  const total=totalSalidasAnticipadas();
+  document.getElementById('salidas-total').textContent='$'+total.toLocaleString();
+  const html=state.members.map((m,i)=>{
+    const salio=!!state.salidas[m];
+    return`<div class="pago-row">
+      <div class="member-left">
+        <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px">${initials(m)}</div>
+        <div>
+          <span style="font-size:13px;font-weight:500">${m}</span>
+          ${salio?`<div style="font-size:10px;color:var(--red)">Baja registrada · ${state.salidas[m].fecha}</div>`:''}
+        </div>
+      </div>
+      <button class="pago-btn ${salio?'active-pend':'active-paid'}" onclick="toggleSalida('${m.replace(/'/g,"\'")}')">
+        ${salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo'}
+      </button>
+    </div>`;
+  }).join('');
+  document.getElementById('salidas-content').innerHTML=html;
 }
 
 function populateSelects(){

@@ -303,7 +303,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 </div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzY2m--c6IHtGhQfofKed2OZvaWCL115_KOrSxsCJAdDZxkH2J17as08LrbSqDQyFyg/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzqXNdYaL9aSvxGXNmoM0_UrYN2vUS2_iyVv-CBbCS3hBdhkkRYJ9h2_9uOG71CVVo/exec';
 const SEMANAS=13,MIN_DIAS=5,SANCION=200,INSCRIPCION=200;
 const DIAS=['D','L','M','M','J','V','S'];
 const DIAS_FULL=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -343,16 +343,54 @@ async function loadData(){
   try{
     const res=await fetch(SCRIPT_URL);
     const json=await res.json();
-    if(json.ok&&json.data){state.entries=json.data.filter(r=>r.participante);setSyncStatus('ok','Sincronizado');}
-    else setSyncStatus('err','Error al cargar');
+    if(json.ok&&json.data){
+      const d=json.data;
+      // Registros
+      if(d.registros) state.entries=d.registros.filter(r=>r.participante);
+      // Miembros - solo si hay datos en sheet, si no usa los default
+      if(d.miembros&&d.miembros.length>0) state.members=d.miembros;
+      // Pagos
+      if(d.pagos){
+        state.pagos={};
+        d.pagos.forEach(p=>{ if(p.participante&&p.mes) state.pagos[p.participante+'|'+p.mes]=p.status; });
+      }
+      // Salidas
+      if(d.salidas){
+        state.salidas={};
+        d.salidas.forEach(s=>{ if(s.participante) state.salidas[s.participante]={fecha:s.fecha}; });
+      }
+      populateSelects();
+      setSyncStatus('ok','Sincronizado');
+    } else setSyncStatus('err','Error al cargar');
   }catch(e){setSyncStatus('err','Sin conexión');}
 }
 async function saveEntry(entry){
   setSyncStatus('loading','Guardando...');
   try{
-    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(entry)});
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'registro',data:entry})});
     setSyncStatus('ok','Guardado');return true;
   }catch(e){setSyncStatus('err','Error al guardar');return false;}
+}
+
+async function savePago(participante,mes,status){
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'pago',participante,mes,status})});
+    setSyncStatus('ok','Guardado');
+  }catch(e){setSyncStatus('err','Error al guardar');}
+}
+
+async function saveSalida(participante,action,fecha){
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'salida',participante,action,fecha})});
+    setSyncStatus('ok','Guardado');
+  }catch(e){setSyncStatus('err','Error al guardar');}
+}
+
+async function saveMiembro(nombre,action){
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'miembro',nombre,action})});
+    setSyncStatus('ok','Guardado');
+  }catch(e){setSyncStatus('err','Error al guardar');}
 }
 
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
@@ -652,8 +690,11 @@ function renderSanciones(){
 /* PAGOS MENSUALES */
 function togglePago(member,mes){
   const k=member+'|'+mes;
-  state.pagos[k]=state.pagos[k]==='pagado'?'pendiente':'pagado';
+  const newStatus=state.pagos[k]==='pagado'?'pendiente':'pagado';
+  state.pagos[k]=newStatus;
+  savePago(member,mes,newStatus);
   renderPagos();
+  renderSanciones();
 }
 
 function renderPagos(){
@@ -690,11 +731,13 @@ function renderPagos(){
 }
 
 function toggleSalida(member){
-  const k=member;
-  if(state.salidas[k]){
-    delete state.salidas[k];
+  if(state.salidas[member]){
+    delete state.salidas[member];
+    saveSalida(member,'remove','');
   } else {
-    state.salidas[k]={fecha:new Date().toISOString().split('T')[0]};
+    const fecha=new Date().toISOString().split('T')[0];
+    state.salidas[member]={fecha};
+    saveSalida(member,'add',fecha);
   }
   renderSalidas();
   renderSanciones();
@@ -741,6 +784,7 @@ function addMember(){
   if(!name)return;
   if(state.members.includes(name)){toast('Ya existe ese participante',false);return;}
   state.members.push(name);inp.value='';
+  saveMiembro(name,'add');
   populateSelects();renderEquipo();
   toast(name+' agregado al reto');
 }
@@ -748,6 +792,7 @@ function addMember(){
 function removeMember(i){
   const name=state.members[i];
   state.members.splice(i,1);
+  saveMiembro(name,'remove');
   populateSelects();renderEquipo();
   toast(name+' eliminado',false);
 }

@@ -8,25 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-:root {
-  --green:#0077A8;--green-light:#E0F4FA;--green-mid:#00B4D8;--green-dark:#005F7F;
-  --red-light:#FCEBEB;--red:#A32D2D;--amber-light:#FAEEDA;--amber:#633806;
-  --blue-light:#E0F4FA;--blue:#005F7F;--bg:#F0F9FC;--surface:#ffffff;
-  --border:rgba(0,119,168,0.15);--text:#0a2533;--text-2:#2c5f72;--text-3:#7aaebb;
-  --radius:12px;--radius-sm:8px;
-}
+:root{--green:#0077A8;--green-light:#E0F4FA;--green-mid:#00B4D8;--green-dark:#005F7F;--red-light:#FCEBEB;--red:#A32D2D;--amber-light:#FAEEDA;--amber:#633806;--blue-light:#E0F4FA;--blue:#005F7F;--bg:#F0F9FC;--surface:#ffffff;--border:rgba(0,119,168,0.15);--text:#0a2533;--text-2:#2c5f72;--text-3:#7aaebb;--radius:12px;--radius-sm:8px;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color:var(--text)}
 .app-header{background:var(--green-dark);padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
 .app-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:.5px}
 .app-title span{color:var(--green-mid)}
 .mode-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:var(--green-mid);letter-spacing:1px;text-transform:uppercase}
-.nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.nav-btn{flex:1;padding:10px 2px 8px;font-size:10px;font-weight:600;border:none;background:none;color:var(--text-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2.5px solid transparent;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.5px;transition:color .15s}
-.nav-btn i{font-size:17px}
+.nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto}
+.nav-btn{flex:1;min-width:52px;padding:10px 2px 8px;font-size:9px;font-weight:600;border:none;background:none;color:var(--text-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2.5px solid transparent;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.3px;transition:color .15s;white-space:nowrap}
+.nav-btn i{font-size:16px}
 .nav-btn.active{color:var(--green);border-bottom-color:var(--green)}
-.screen{display:none;padding:14px 14px 80px}
-.screen.active{display:block}
+.screen{display:none;padding:14px 14px 80px}.screen.active{display:block}
 .page-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:.3px}
 .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin-bottom:10px}
 .card-title{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:11px;display:flex;align-items:center;gap:5px}
@@ -50,10 +43,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .check-box i{font-size:14px}
 .status-wrap{text-align:center;padding:8px 0 4px}
 .status-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:30px;font-size:14px;font-weight:600;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;text-transform:uppercase}
-.s-ok{background:var(--green-light);color:var(--green-dark)}
-.s-inc{background:var(--amber-light);color:var(--amber)}
-.s-bad{background:var(--red-light);color:var(--red)}
-.s-sus{background:var(--blue-light);color:var(--blue)}
+.s-ok{background:var(--green-light);color:var(--green-dark)}.s-inc{background:var(--amber-light);color:var(--amber)}.s-bad{background:var(--red-light);color:var(--red)}.s-sus{background:var(--blue-light);color:var(--blue)}
 .evidence-box{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;cursor:pointer;position:relative;transition:border-color .15s;background:var(--bg)}
 .evidence-box:hover{border-color:var(--green)}
 .evidence-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -64,8 +54,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .evidence-clear{font-size:12px;color:var(--red);cursor:pointer;margin-top:6px;display:none;text-align:center}
 .evidence-clear.show{display:block}
 .btn-save{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-save:hover{background:var(--green-dark)}
-.btn-save:disabled{opacity:.5;cursor:not-allowed}
+.btn-save:hover{background:var(--green-dark)}.btn-save:disabled{opacity:.5;cursor:not-allowed}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;color:white;z-index:999;display:none;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px}
 .toast.show{display:block}
 .metrics-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -93,9 +82,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .member-name{font-size:14px;font-weight:600;color:var(--text)}
 .member-sub{font-size:10px;color:var(--text-3);margin-top:1px}
 .badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
-.b-ok{background:var(--green-light);color:var(--green-dark)}
-.b-bad{background:var(--red-light);color:var(--red)}
-.b-paid{background:var(--blue-light);color:var(--blue)}
+.b-ok{background:var(--green-light);color:var(--green-dark)}.b-bad{background:var(--red-light);color:var(--red)}.b-paid{background:var(--blue-light);color:var(--blue)}
 .bolsa-banner{background:var(--green-dark);border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
 .bolsa-amount{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--green-mid)}
 .bolsa-label{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px}
@@ -112,9 +99,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .btn-add{padding:9px 14px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Barlow',sans-serif}
 .sync-bar{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.5)}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text-3)}
-.sync-dot.ok{background:#22c55e}
-.sync-dot.loading{background:#f59e0b;animation:pulse 1s infinite}
-.sync-dot.err{background:var(--red)}
+.sync-dot.ok{background:#22c55e}.sync-dot.loading{background:#f59e0b;animation:pulse 1s infinite}.sync-dot.err{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .loading-state{text-align:center;padding:2rem;color:var(--text-3);font-size:13px}
 .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px}
@@ -122,36 +107,40 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .warn-box{background:var(--amber-light);border-radius:var(--radius-sm);padding:8px 11px;font-size:12px;color:var(--amber);margin-top:8px;display:none}
 .warn-box.show{display:block}
 .ritmo-box{border-radius:var(--radius-sm);padding:12px;margin-top:8px;display:none;background:var(--green-light);border:1px solid var(--green-mid)}
-.ritmo-box.show{display:block}
-.ritmo-box.bad{background:var(--red-light);border-color:#F09595}
+.ritmo-box.show{display:block}.ritmo-box.bad{background:var(--red-light);border-color:#F09595}
 .ritmo-value{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700}
-.ritmo-msg{font-size:12px;margin-top:2px}
-.ritmo-ref{font-size:10px;color:var(--text-3);margin-top:3px}
+.ritmo-msg{font-size:12px;margin-top:2px}.ritmo-ref{font-size:10px;color:var(--text-3);margin-top:3px}
 .section-label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin:14px 0 6px}
 .filter-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-3);font-family:'Barlow',sans-serif;transition:all .15s}
 .filter-btn i{font-size:13px}
 .filter-btn.active{background:var(--green);color:white;border-color:var(--green)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px 32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px 32px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
 .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
 .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px}
 .modal-sub{font-size:12px;color:var(--text-3);margin-bottom:16px}
 .detail-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .detail-row:last-child{border-bottom:none}
 .detail-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
-.detail-icon.ok{background:var(--green-light);color:var(--green-dark)}
-.detail-icon.bad{background:var(--red-light);color:var(--red)}
-.detail-text{font-size:13px;color:var(--text)}
+.detail-icon.ok{background:var(--green-light);color:var(--green-dark)}.detail-icon.bad{background:var(--red-light);color:var(--red)}
+.detail-text{font-size:13px;color:var(--text);flex:1}
 .detail-text small{display:block;font-size:11px;color:var(--text-3);margin-top:2px}
 .modal-close{width:100%;margin-top:16px;padding:11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--text)}
 .pago-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
 .pago-row:last-child{border-bottom:none}
-.pago-btn{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text-3);font-family:'Barlow',sans-serif}
+.pago-btn{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text-3);font-family:'Barlow',sans-serif;display:inline-flex;align-items:center;gap:4px}
 .pago-btn.active-paid{background:var(--green-light);color:var(--green-dark);border-color:var(--green-mid)}
 .pago-btn.active-pend{background:var(--red-light);color:var(--red);border-color:#F09595}
 .month-header{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;justify-content:space-between}
 .month-summary{font-size:11px;color:var(--text-3)}
+.sancion-day-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sancion-day-row:last-child{border-bottom:none}
+.member-sanc-header{display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer}
+.member-sanc-header:hover{opacity:.8}
+.member-sanc-days{display:none;padding-bottom:4px}
+.member-sanc-days.open{display:block}
+.inactive-badge{font-size:10px;padding:2px 7px;background:var(--bg);color:var(--text-3);border:1px solid var(--border);border-radius:20px;font-weight:600}
 </style>
 </head>
 <body>
@@ -160,14 +149,16 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <div class="app-title">Reto Constancia <span>2026</span></div>
     <div class="mode-badge">&#9889; Modo Atleta</div>
   </div>
-  <div class="sync-bar" id="sync-bar">
+  <div class="sync-bar">
     <div class="sync-dot loading" id="sync-dot"></div>
     <span id="sync-label">Cargando...</span>
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title"></div>
     <div class="modal-sub" id="modal-sub"></div>
@@ -175,14 +166,17 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <button class="modal-close" onclick="closeModal()">Cerrar</button>
   </div>
 </div>
+
 <nav class="nav">
-  <button class="nav-btn active" onclick="go('registro',this)"><i class="ti ti-pencil"></i>Registrar</button>
+  <button class="nav-btn active" onclick="go('registro',this)"><i class="ti ti-pencil"></i>Registro</button>
   <button class="nav-btn" onclick="go('semana',this)"><i class="ti ti-calendar-week"></i>Semana</button>
   <button class="nav-btn" onclick="go('sanciones',this)"><i class="ti ti-coin"></i>Sanciones</button>
   <button class="nav-btn" onclick="go('pagos',this)"><i class="ti ti-cash"></i>Pagos</button>
   <button class="nav-btn" onclick="go('salidas',this)"><i class="ti ti-door-exit"></i>Bajas</button>
   <button class="nav-btn" onclick="go('equipo',this)"><i class="ti ti-users"></i>Equipo</button>
 </nav>
+
+<!-- REGISTRO -->
 <div id="screen-registro" class="screen active">
   <div class="page-title">Nuevo registro</div>
   <div class="card">
@@ -208,34 +202,17 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   </div>
   <div class="card">
     <div class="card-title"><i class="ti ti-checks"></i> Verificaci&#243;n</div>
-    <div onclick="toggle('c1')" class="check-row">
-      <div class="check-label"><i class="ti ti-clock"></i>45 minutos o m&#225;s en Strava</div>
-      <div class="check-box checked" id="c1"><i class="ti ti-check"></i></div>
-    </div>
-    <div onclick="toggle('c2')" class="check-row">
-      <div class="check-label"><i class="ti ti-camera"></i>Foto del lugar + selfie subida</div>
-      <div class="check-box checked" id="c2"><i class="ti ti-check"></i></div>
-    </div>
-    <div onclick="toggle('c3')" class="check-row">
-      <div class="check-label"><i class="ti ti-eye"></i>Actividad visible en Strava</div>
-      <div class="check-box checked" id="c3"><i class="ti ti-check"></i></div>
-    </div>
-    <div onclick="toggle('c4')" class="check-row">
-      <div class="check-label"><i class="ti ti-device-mobile"></i>No es manual ni editada</div>
-      <div class="check-box checked" id="c4"><i class="ti ti-check"></i></div>
-    </div>
-    <div onclick="toggle('c5')" class="check-row">
-      <div class="check-label"><i class="ti ti-chart-line"></i>M&#233;tricas coherentes</div>
-      <div class="check-box checked" id="c5"><i class="ti ti-check"></i></div>
-    </div>
+    <div onclick="toggle('c1')" class="check-row"><div class="check-label"><i class="ti ti-clock"></i>45 minutos o m&#225;s en Strava</div><div class="check-box checked" id="c1"><i class="ti ti-check"></i></div></div>
+    <div onclick="toggle('c2')" class="check-row"><div class="check-label"><i class="ti ti-camera"></i>Foto del lugar + selfie subida</div><div class="check-box checked" id="c2"><i class="ti ti-check"></i></div></div>
+    <div onclick="toggle('c3')" class="check-row"><div class="check-label"><i class="ti ti-eye"></i>Actividad visible en Strava</div><div class="check-box checked" id="c3"><i class="ti ti-check"></i></div></div>
+    <div onclick="toggle('c4')" class="check-row"><div class="check-label"><i class="ti ti-device-mobile"></i>No es manual ni editada</div><div class="check-box checked" id="c4"><i class="ti ti-check"></i></div></div>
+    <div onclick="toggle('c5')" class="check-row"><div class="check-label"><i class="ti ti-chart-line"></i>M&#233;tricas coherentes</div><div class="check-box checked" id="c5"><i class="ti ti-check"></i></div></div>
   </div>
   <div class="card">
     <div class="card-title"><i class="ti ti-photo"></i> Evidencia (screenshot Strava)</div>
     <div class="evidence-box">
       <input type="file" id="ev-file" accept="image/*" onchange="previewEv(this)">
-      <i class="ti ti-upload"></i>
-      <p>Toca para subir screenshot</p>
-      <p style="font-size:11px">PNG o JPG &#8212; m&#225;x 5 MB</p>
+      <i class="ti ti-upload"></i><p>Toca para subir screenshot</p><p style="font-size:11px">PNG o JPG &#8212; m&#225;x 5 MB</p>
     </div>
     <img id="ev-preview" class="evidence-preview" alt="Evidencia">
     <div id="ev-clear" class="evidence-clear" onclick="clearEv()"><i class="ti ti-trash"></i> Quitar imagen</div>
@@ -244,10 +221,11 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <div class="card-title"><i class="ti ti-notes"></i> Notas</div>
     <textarea id="reg-notas" placeholder="Aclaraciones, contexto, observaciones..."></textarea>
   </div>
-  <div class="status-wrap"><div id="status-preview"></div></div>
-  <br>
+  <div class="status-wrap"><div id="status-preview"></div></div><br>
   <button class="btn-save" onclick="guardar()"><i class="ti ti-device-floppy"></i> Guardar en el reto</button>
 </div>
+
+<!-- SEMANA -->
 <div id="screen-semana" class="screen">
   <div class="page-title">Vista semanal</div>
   <div class="week-tabs" id="week-tabs"></div>
@@ -255,30 +233,45 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <button class="filter-btn active" id="filter-todos" onclick="setFilter('todos',this)"><i class="ti ti-users"></i> Todos</button>
     <button class="filter-btn" id="filter-falta" onclick="setFilter('falta',this)"><i class="ti ti-alert-triangle"></i> Con falta</button>
   </div>
-  <div id="semana-content"><div class="loading-state"><div class="spinner"></div>Cargando datos...</div></div>
+  <div id="semana-content"></div>
 </div>
+
+<!-- SANCIONES -->
 <div id="screen-sanciones" class="screen">
   <div class="page-title">Sanciones y bolsa</div>
-  <div id="sanciones-content"><div class="loading-state"><div class="spinner"></div>Calculando...</div></div>
+  <div id="sanciones-content"></div>
 </div>
+
+<!-- PAGOS -->
 <div id="screen-pagos" class="screen">
   <div class="page-title">Pagos mensuales</div>
   <div class="card" style="background:var(--green-dark);border:none;margin-bottom:10px">
     <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Pagos recibidos</div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--green-mid)" id="pagos-total">$0</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles · puedes marcar meses futuros por adelantado</div>
   </div>
   <div id="pagos-content"></div>
 </div>
+
+<!-- BAJAS -->
 <div id="screen-salidas" class="screen">
   <div class="page-title">Bajas y salidas anticipadas</div>
-  <div class="card" style="background:var(--red-light);border-color:#F09595;margin-bottom:10px">
-    <div style="font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Sanci&#243;n por salida anticipada</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--red)" id="salidas-total">$0</div>
-    <div style="font-size:11px;color:var(--red);opacity:.7">suma directo a la bolsa &middot; $1,000 por persona</div>
+  <div class="metrics-row">
+    <div class="metric" style="background:var(--red-light);border-color:#F09595">
+      <div class="metric-label" style="color:var(--red)">Total por bajas</div>
+      <div class="metric-value" id="salidas-total" style="color:var(--red)">$0</div>
+      <div class="metric-sub">$1,000 por persona</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Personas dadas de baja</div>
+      <div class="metric-value" id="salidas-count">0</div>
+      <div class="metric-sub">de <span id="salidas-total-members">0</span> participantes</div>
+    </div>
   </div>
   <div class="card" id="salidas-content"></div>
 </div>
+
+<!-- EQUIPO -->
 <div id="screen-equipo" class="screen">
   <div class="page-title">Equipo <span id="equipo-count" style="font-size:14px;color:var(--text-3);font-weight:400"></span></div>
   <div class="card" id="equipo-lista"></div>
@@ -286,88 +279,119 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <input type="text" id="inp-nuevo" placeholder="Nombre del nuevo participante">
     <button class="btn-add" onclick="addMember()"><i class="ti ti-plus"></i> Agregar</button>
   </div>
-  <div style="font-size:11px;color:var(--text-3);margin-top:8px">Agrega o elimina participantes del reto aqu&#237;.</div>
 </div>
+
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzqXNdYaL9aSvxGXNmoM0_UrYN2vUS2_iyVv-CBbCS3hBdhkkRYJ9h2_9uOG71CVVo/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNiyQ1-iseWKOK40MTtyP21h7DX-7Mm-g3sTyEIXH5NICHsftfzRDNk2BxrIH7N_y1/exec';
 const SEMANAS=13,MIN_DIAS=5,SANCION=200,FALTAS_PERMITIDAS=2;
 const DIAS=['D','L','M','M','J','V','S'];
+const DIAS_FULL=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['Junio','Julio','Agosto'];
-const COLORS=['#2d6a2d','#3B82F6','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#06b6d4','#e11d48','#0ea5e9','#10b981','#7c3aed','#db2777','#0891b2','#65a30d','#dc2626','#ca8a04','#0284c7','#16a34a','#9333ea','#be185d','#FC4C02'];
+const COLORS=['#0077A8','#3B82F6','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#06b6d4','#e11d48','#0ea5e9','#10b981','#7c3aed','#db2777','#0891b2','#65a30d','#dc2626','#ca8a04','#0284c7','#16a34a','#9333ea','#be185d','#FC4C02'];
 const TIPOS=[
   {id:'Carrera',label:'Carrera/Trote',icon:'ti-run',warn:null},
   {id:'Caminata',label:'Caminata',icon:'ti-walk',warn:null},
   {id:'Ciclismo',label:'Ciclismo',icon:'ti-bike',warn:null},
-  {id:'Natacion',label:'Nataci\u00f3n',icon:'ti-ripple',warn:'No cuentan pool parties, snorkel ni tiempo social.'},
+  {id:'Natación',label:'Natación',icon:'ti-ripple',warn:'No cuentan pool parties, snorkel ni tiempo social.'},
   {id:'Surf de Remo',label:'Surf de remo',icon:'ti-wave-sine',warn:null},
   {id:'Tenis',label:'Tenis',icon:'ti-tournament',warn:'Foto en cancha con raqueta requerida.'},
   {id:'Golf',label:'Golf',icon:'ti-flag',warn:'Foto en campo requerida.'},
   {id:'Gym',label:'Gym / Otro',icon:'ti-barbell',warn:null},
-  {id:'Yoga Casa',label:'Yoga casa',icon:'ti-heart',warn:'M\u00e1x 1 d\u00eda/semana. Foto del espacio.'},
+  {id:'Yoga Casa',label:'Yoga casa',icon:'ti-heart',warn:'Máx 1 día/semana. Foto del espacio.'},
   {id:'Yoga Clase',label:'Yoga clase',icon:'ti-building',warn:'Foto en el estudio requerida.'},
   {id:'Remo',label:'Remo',icon:'ti-anchor',warn:null},
   {id:'Senderismo',label:'Senderismo',icon:'ti-mountain',warn:null},
 ];
+
 let state={
-  members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Anal\u00ed','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodr\u00edguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
-  entries:[],pagos:{},salidas:{},currentWeek:1,selectedType:'Carrera',evidenceData:null,
+  members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Analí','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodríguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
+  entries:[],
+  pagos:{},       // pagos mensuales: key = "nombre|Mes" → "pagado"|"pendiente"
+  salidas:{},     // bajas: key = nombre → {fecha}
+  sancPagos:{},   // pagos de sanciones dia a dia: key = "nombre|S1D3" → true/false
+  sancExtra:{},   // sanción extraoficial s1: key = nombre → "pagado"|"pendiente"|"debe"
+  currentWeek:1,
+  selectedType:'Carrera',
+  evidenceData:null,
 };
-function setSyncStatus(s,label){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=label;}
+
+// ── SYNC ────────────────────────────────────────────────
+function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
 async function loadData(){
   setSyncStatus('loading','Sincronizando...');
   try{
-    const res=await fetch(SCRIPT_URL);const json=await res.json();
+    const res=await fetch(SCRIPT_URL);
+    const json=await res.json();
     if(json.ok&&json.data){
       const d=json.data;
       if(d.registros)state.entries=d.registros.filter(r=>r.participante);
       if(d.miembros&&d.miembros.length>0)state.members=d.miembros;
       if(d.pagos){state.pagos={};d.pagos.forEach(p=>{if(p.participante&&p.mes)state.pagos[p.participante+'|'+p.mes]=p.status;});}
       if(d.salidas){state.salidas={};d.salidas.forEach(s=>{if(s.participante)state.salidas[s.participante]={fecha:s.fecha};});}
-      populateSelects();setSyncStatus('ok','Sincronizado');
-    }else setSyncStatus('err','Error al cargar');
-  }catch(e){setSyncStatus('err','Sin conexi\u00f3n');}
+      if(d.sancPagos){state.sancPagos={};d.sancPagos.forEach(p=>{if(p.key)state.sancPagos[p.key]=p.pagado==='true'||p.pagado===true;});}
+      if(d.sancExtra){state.sancExtra={};d.sancExtra.forEach(p=>{if(p.participante)state.sancExtra[p.participante]=p.status;});}
+      populateSelects();
+      setSyncStatus('ok','Sincronizado');
+    } else setSyncStatus('err','Error al cargar');
+  }catch(e){setSyncStatus('err','Sin conexión');}
 }
-async function saveEntry(entry){setSyncStatus('loading','Guardando...');try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'registro',data:entry})});setSyncStatus('ok','Guardado');return true;}catch(e){setSyncStatus('err','Error al guardar');return false;}}
-async function savePago(p,m,s){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'pago',participante:p,mes:m,status:s})});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error');}}
-async function saveSalida(p,a,f){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'salida',participante:p,action:a,fecha:f})});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error');}}
-async function saveMiembro(n,a){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'miembro',nombre:n,action:a})});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error');}}
+async function post(body){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error al guardar');}}
+
+// ── HELPERS ────────────────────────────────────────────
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 function color(i){return COLORS[i%COLORS.length];}
 function toast(msg,ok=true){const t=document.getElementById('toast');t.textContent=msg;t.style.background=ok?'#22c55e':'#A32D2D';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function activeMembers(){return state.members.filter(m=>!state.salidas[m]);}
 function getEntry(m,w,d){return state.entries.find(e=>e.participante===m&&+e.semana===w&&+e.dia===d);}
 function diasCumplidos(m,w){let ok=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&e.status==='Completado')ok++;}return ok;}
-function diasNoCompletados(m,w){let f=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inv\u00e1lido','Sospechoso'].includes(e.status))f++;}return f;}
-function diasFalta(m,w){return Math.max(0,diasNoCompletados(m,w)-FALTAS_PERMITIDAS);}
-function tieneFaltaSemana(m,w){return diasNoCompletados(m,w)>FALTAS_PERMITIDAS;}
-function isPagada(m,w){for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&e.status==='Sansi\u00f3n Pagada')return true;}return false;}
+function diasNoComp(m,w){let f=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status))f++;}return f;}
+function diasFalta(m,w){return Math.max(0,diasNoComp(m,w)-FALTAS_PERMITIDAS);}
+function tieneFalta(m,w){return diasNoComp(m,w)>FALTAS_PERMITIDAS;}
 function totalFaltas(m){let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);return f;}
 function totalSancion(m){return totalFaltas(m)*SANCION;}
+function totalSancionPagada(m){
+  let p=0;
+  for(let w=1;w<=SEMANAS;w++){
+    for(let d=0;d<7;d++){
+      const e=getEntry(m,w,d);
+      if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
+        const nc=diasNoComp(m,w);
+        // only days beyond the 2 allowed generate sanction
+        if(nc>FALTAS_PERMITIDAS){
+          const k=m+'|S'+w+'D'+d;
+          if(state.sancPagos[k])p+=SANCION;
+        }
+      }
+    }
+  }
+  return p;
+}
+function totalSancExtra(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe'||v==='pendiente')t+=200;});return t;}
+function totalSancExtraPagada(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='pagado')t+=200;});return t;}
 function totalPagosMensuales(){let t=0;state.members.forEach(m=>{MESES.forEach(mes=>{if(state.pagos[m+'|'+mes]==='pagado')t+=200;});});return t;}
-function totalSalidasAnticipadas(){return Object.values(state.salidas).filter(s=>s).length*1000;}
-function bolsaTotal(){return totalSancion_global()+totalPagosMensuales()+totalSalidasAnticipadas();}
-function totalSancion_global(){let t=0;state.members.forEach(m=>t+=totalSancion(m));return t;}
+function totalSalidasAnticipadas(){return Object.keys(state.salidas).length*1000;}
+function totalSancionGlobal(){let t=0;state.members.forEach(m=>t+=totalSancion(m));return t;}
+function bolsaTotal(){return totalSancionGlobal()+totalPagosMensuales()+totalSalidasAnticipadas()+totalSancExtra();}
+
+// ── TYPE GRID & RITMO ──────────────────────────────────
 function buildTypeGrid(){
   document.getElementById('type-grid').innerHTML=TIPOS.map(t=>
-    '<button class="type-btn '+(t.id===state.selectedType?'selected':'')+'" onclick="selType(this,\''+t.id+'\')"><i class="ti '+t.icon+'"></i>'+t.label+'</button>').join('');
+    `<button class="type-btn ${t.id===state.selectedType?'selected':''}" onclick="selType(this,'${t.id}')"><i class="ti ${t.icon}"></i>${t.label}</button>`).join('');
 }
 function calcRitmo(){
   const dist=parseFloat(document.getElementById('ritmo-dist').value)||0;
   const tiempo=parseFloat(document.getElementById('ritmo-tiempo').value)||0;
-  const box=document.getElementById('ritmo-box');
-  const result=document.getElementById('ritmo-result');
+  const box=document.getElementById('ritmo-box');const result=document.getElementById('ritmo-result');
   if(!dist||!tiempo){result.innerHTML='';return;}
   const tipo=state.selectedType;
-  const maxRitmo=tipo==='Caminata'?12.86:9.0;
-  const minKm=tipo==='Caminata'?3.5:5.0;
-  const ritmo=tiempo/dist;
-  const mins=Math.floor(ritmo);
-  const secs=Math.round((ritmo-mins)*60);
+  const maxRitmo=tipo==='Caminata'?12.86:9.0;const minKm=tipo==='Caminata'?3.5:5.0;
+  const ritmo=tiempo/dist;const mins=Math.floor(ritmo);const secs=Math.round((ritmo-mins)*60);
   const ritmoStr=mins+':'+(secs<10?'0':'')+secs+' min/km';
-  const refStr=tipo==='Caminata'?'M\u00edn 3.5 km \u00b7 m\u00e1x 12:51 min/km':'M\u00edn 5 km \u00b7 m\u00e1x 9:00 min/km';
+  const refStr=tipo==='Caminata'?'Mín 3.5 km · máx 12:51 min/km':'Mín 5 km · máx 9:00 min/km';
   let bad=false,msg='';
-  if(dist<minKm){bad=true;msg='Distancia insuficiente: '+dist+' km (m\u00ednimo '+minKm+' km)';}
-  else if(ritmo>maxRitmo){bad=true;msg='Ritmo muy lento: '+ritmoStr+' (m\u00e1ximo '+(tipo==='Caminata'?'12:51':'9:00')+' min/km)';}
-  else{msg='Ritmo '+ritmoStr+' \u2014 cumple el requisito \u2713';}
+  if(dist<minKm){bad=true;msg='Distancia insuficiente: '+dist+' km (mínimo '+minKm+' km)';}
+  else if(ritmo>maxRitmo){bad=true;msg='Ritmo muy lento: '+ritmoStr;}
+  else{msg='Ritmo '+ritmoStr+' ✓';}
   box.className='ritmo-box show'+(bad?' bad':'');
   result.innerHTML='<div class="ritmo-value" style="color:'+(bad?'var(--red)':'var(--green)')+'">'+ritmoStr+'</div><div class="ritmo-msg" style="color:'+(bad?'var(--red)':'var(--green)')+'">'+msg+'</div><div class="ritmo-ref">'+refStr+'</div>';
   if(bad)document.getElementById('c1').classList.remove('checked');
@@ -383,28 +407,30 @@ function selType(btn,id){
   const rb=document.getElementById('ritmo-box');
   if(id==='Carrera'||id==='Caminata'){
     rb.className='ritmo-box show';
-    document.getElementById('ritmo-dist').value='';
-    document.getElementById('ritmo-tiempo').value='';
-    document.getElementById('ritmo-result').innerHTML='';
+    document.getElementById('ritmo-dist').value='';document.getElementById('ritmo-tiempo').value='';document.getElementById('ritmo-result').innerHTML='';
   }else{rb.className='ritmo-box';document.getElementById('c1').classList.add('checked');}
   updateStatus();
 }
+
+// ── CHECKS & STATUS ────────────────────────────────────
 function toggle(id){document.getElementById(id).classList.toggle('checked');updateStatus();}
 function isChecked(id){return document.getElementById(id).classList.contains('checked');}
 function calcStatus(){
-  if(!isChecked('c4'))return{s:'Inv\u00e1lido',cls:'s-bad',icon:'ti-ban',reasons:['Actividad manual o editada']};
+  if(!isChecked('c4'))return{s:'Inválido',cls:'s-bad',icon:'ti-ban',reasons:['Actividad manual o editada']};
   let reasons=[];
   if(!isChecked('c1'))reasons.push('Tiempo menor a 45 minutos en Strava');
   if(!isChecked('c2'))reasons.push('Sin foto de evidencia (lugar + selfie)');
   if(!isChecked('c3'))reasons.push('Actividad no visible en Strava');
   if(reasons.length>0)return{s:'Incompleto',cls:'s-inc',icon:'ti-alert-triangle',reasons};
-  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['M\u00e9tricas incoherentes']};
+  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['Métricas incoherentes']};
   return{s:'Completado',cls:'s-ok',icon:'ti-circle-check',reasons:[]};
 }
 function updateStatus(){
   const r=calcStatus();
-  document.getElementById('status-preview').innerHTML='<span class="status-pill '+r.cls+'"><i class="ti '+r.icon+'"></i>'+r.s+'</span>';
+  document.getElementById('status-preview').innerHTML=`<span class="status-pill ${r.cls}"><i class="ti ${r.icon}"></i>${r.s}</span>`;
 }
+
+// ── EVIDENCE ───────────────────────────────────────────
 function previewEv(input){
   const file=input.files[0];if(!file)return;
   if(file.size>5*1024*1024){toast('Imagen supera 5 MB',false);return;}
@@ -413,6 +439,8 @@ function previewEv(input){
   reader.readAsDataURL(file);
 }
 function clearEv(){state.evidenceData=null;document.getElementById('ev-file').value='';const p=document.getElementById('ev-preview');p.src='';p.classList.remove('show');document.getElementById('ev-clear').classList.remove('show');}
+
+// ── GUARDAR ────────────────────────────────────────────
 async function guardar(){
   const mi=document.getElementById('reg-member').value;
   const fecha=document.getElementById('reg-fecha').value;
@@ -425,95 +453,225 @@ async function guardar(){
   const member=state.members[parseInt(mi)];
   if(type==='Yoga Casa'){
     let yc=0;for(let dd=0;dd<7;dd++){const e=getEntry(member,semana,dd);if(e&&e.tipo==='Yoga Casa')yc++;}
-    if(yc>=1){toast('Yoga en casa: m\u00e1x 1 d\u00eda/semana',false);return;}
+    if(yc>=1){toast('Yoga en casa: máx 1 día/semana',false);return;}
   }
   const res=calcStatus();
   const entry={participante:member,semana,dia:d,fecha,tipo:type,status:res.s,chk_tiempo:isChecked('c1'),chk_foto:isChecked('c2'),chk_visible:isChecked('c3'),chk_manual:isChecked('c4'),chk_metricas:isChecked('c5'),notas,evidencia_url:state.evidenceData?'[imagen adjunta]':'',razones:res.reasons.join(' | ')};
   const btn=document.querySelector('.btn-save');
   btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Guardando...';
-  const ok=await saveEntry(entry);
+  await post({type:'registro',data:entry});
   btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> Guardar en el reto';
-  if(ok){
-    const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===semana&&+e.dia===d);
-    if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
-    toast(res.s==='Completado'?member+' \u2014 guardado correctamente':member+' \u2014 '+res.s);
-    document.getElementById('reg-notas').value='';clearEv();
-    ['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).classList.add('checked'));
-    updateStatus();
-  }
+  const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===semana&&+e.dia===d);
+  if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
+  toast(res.s==='Completado'?`${member} — guardado`:(`${member} — ${res.s}`));
+  document.getElementById('reg-notas').value='';clearEv();
+  ['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).classList.add('checked'));
+  updateStatus();
 }
+
+// ── NAV ────────────────────────────────────────────────
 function go(id,btn){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');btn.classList.add('active');
-  if(id==='semana')renderSemana();if(id==='sanciones')renderSanciones();
-  if(id==='pagos')renderPagos();if(id==='salidas')renderSalidas();if(id==='equipo')renderEquipo();
+  if(id==='semana')renderSemana();
+  if(id==='sanciones')renderSanciones();
+  if(id==='pagos')renderPagos();
+  if(id==='salidas')renderSalidas();
+  if(id==='equipo')renderEquipo();
 }
-function openDayDetail(member,mi,w,d,entryIdx){
-  const entry=entryIdx>=0?state.entries[entryIdx]:null;
-  const diasNames=['Domingo','Lunes','Martes','Mi\u00e9rcoles','Jueves','Viernes','S\u00e1bado'];
+
+// ── MODAL DÍA ──────────────────────────────────────────
+function openDayDetail(member,mi,w,d,eIdx){
+  const entry=eIdx>=0?state.entries[eIdx]:null;
   document.getElementById('modal-title').textContent=member;
-  document.getElementById('modal-sub').textContent='Semana '+w+' \u2014 '+diasNames[d]+(entry&&entry.fecha?' \u00b7 '+entry.fecha:'');
+  document.getElementById('modal-sub').textContent=`Semana ${w} — ${DIAS_FULL[d]}${entry&&entry.fecha?' · '+entry.fecha:''}`;
   let body='';
   if(!entry){
-    body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registr\u00f3 actividad en Strava este d\u00eda</small></div></div>';
+    body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registró actividad este día</small></div></div>';
   }else{
-    const checks=[
-      {key:'chk_tiempo',ok:'45 minutos o m\u00e1s en Strava',bad:'Menos de 45 minutos en Strava'},
-      {key:'chk_foto',ok:'Foto del lugar + selfie subida',bad:'Sin foto de evidencia'},
-      {key:'chk_visible',ok:'Actividad visible en Strava',bad:'Actividad no visible en Strava'},
-      {key:'chk_manual',ok:'Registrada directo en Strava',bad:'Actividad manual o editada'},
-      {key:'chk_metricas',ok:'M\u00e9tricas coherentes',bad:'M\u00e9tricas incoherentes'},
-    ];
     const sc=entry.status==='Completado'?'ok':'bad';
-    body+='<div class="detail-row"><div class="detail-icon '+sc+'"><i class="ti ti-'+(entry.status==='Completado'?'circle-check':'alert-triangle')+'"></i></div><div class="detail-text"><strong>'+entry.status+'</strong><small>Actividad: '+(entry.tipo||'\u2014')+'</small></div></div>';
-    checks.forEach(c=>{const val=entry[c.key];const isOk=val===true||val==='TRUE'||val==='true';body+='<div class="detail-row"><div class="detail-icon '+(isOk?'ok':'bad')+'"><i class="ti ti-'+(isOk?'check':'x')+'"></i></div><div class="detail-text">'+(isOk?c.ok:c.bad)+'</div></div>';});
-    if(entry.notas)body+='<div class="detail-row"><div class="detail-icon ok"><i class="ti ti-notes"></i></div><div class="detail-text">Notas<small>'+entry.notas+'</small></div></div>';
+    body+=`<div class="detail-row"><div class="detail-icon ${sc}"><i class="ti ti-${entry.status==='Completado'?'circle-check':'alert-triangle'}"></i></div><div class="detail-text"><strong>${entry.status}</strong><small>Actividad: ${entry.tipo||'—'}</small></div></div>`;
+    [{key:'chk_tiempo',ok:'45 min o más en Strava',bad:'Menos de 45 minutos'},
+     {key:'chk_foto',ok:'Foto del lugar + selfie subida',bad:'Sin foto de evidencia'},
+     {key:'chk_visible',ok:'Actividad visible en Strava',bad:'Actividad no visible'},
+     {key:'chk_manual',ok:'Registrada directo en Strava',bad:'Manual o editada — no válida'},
+     {key:'chk_metricas',ok:'Métricas coherentes',bad:'Métricas incoherentes'}
+    ].forEach(c=>{
+      const isOk=entry[c.key]===true||entry[c.key]==='TRUE'||entry[c.key]==='true';
+      body+=`<div class="detail-row"><div class="detail-icon ${isOk?'ok':'bad'}"><i class="ti ti-${isOk?'check':'x'}"></i></div><div class="detail-text">${isOk?c.ok:c.bad}</div></div>`;
+    });
+    if(entry.notas)body+=`<div class="detail-row"><div class="detail-icon ok"><i class="ti ti-notes"></i></div><div class="detail-text">Notas<small>${entry.notas}</small></div></div>`;
   }
   document.getElementById('modal-body').innerHTML=body;
   document.getElementById('modal-overlay').classList.add('show');
 }
 function closeModal(e){if(!e||e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('show');}
+
+// ── SEMANA ─────────────────────────────────────────────
 let semanaFilter='todos';
 function setFilter(f,btn){semanaFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSemanaContent();}
 function renderWeekTabs(){
   document.getElementById('week-tabs').innerHTML=Array.from({length:SEMANAS},(_,i)=>
-    '<button class="week-tab '+(i+1===state.currentWeek?'active':'')+'" onclick="selectWeek('+(i+1)+',this)">S'+(i+1)+'</button>').join('');
+    `<button class="week-tab ${i+1===state.currentWeek?'active':''}" onclick="selectWeek(${i+1},this)">S${i+1}</button>`).join('');
 }
 function selectWeek(w,btn){state.currentWeek=w;document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('reg-semana').value=w;renderSemanaContent();}
-function dotClass(e){if(!e)return'bad';if(e.status==='Completado')return'ok';if(['Incompleto','Sospechoso','Inv\u00e1lido'].includes(e.status))return'inc';if(e.status==='Sansi\u00f3n Pagada')return'paid';return'bad';}
-function dotIcon(dc){if(dc==='ok')return'check';if(dc==='inc')return'alert-triangle';if(dc==='paid')return'coin';return'x';}
+function dotClass(e){if(!e)return'bad';if(e.status==='Completado')return'ok';if(['Incompleto','Sospechoso','Inválido'].includes(e.status))return'inc';return'bad';}
+function dotIcon(dc){if(dc==='ok')return'check';if(dc==='inc')return'alert-triangle';return'x';}
 function renderSemanaContent(){
   const w=state.currentWeek;
-  const summary=state.members.map((m,mi)=>({m,mi,ok:diasCumplidos(m,w),noComp:diasNoCompletados(m,w),falta:diasFalta(m,w),tieneFalta:tieneFaltaSemana(m,w)}));
-  const conFalta=summary.filter(x=>x.tieneFalta).length;
-  const porCobrar=summary.reduce((s,x)=>s+(x.tieneFalta?x.falta*SANCION:0),0);
-  let html='<div class="metrics-row"><div class="metric"><div class="metric-label">Con sanci\u00f3n</div><div class="metric-value">'+conFalta+'</div><div class="metric-sub">m\u00e1s de 2 faltas</div></div><div class="metric"><div class="metric-label">Generado esta semana</div><div class="metric-value" style="color:var(--red)">$'+porCobrar.toLocaleString()+'</div><div class="metric-sub">MXN en sanciones</div></div></div>';
-  html+='<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier d\u00eda para ver el detalle</div>';
-  html+='<div class="day-grid">'+DIAS.map(d=>'<div class="day-cell"><div class="day-label">'+d+'</div></div>').join('')+'</div>';
-  const filtered=semanaFilter==='falta'?summary.filter(x=>x.tieneFalta):summary;
-  if(filtered.length===0){html+='<div style="text-align:center;padding:2rem;color:var(--text-3);font-size:13px"><i class="ti ti-confetti" style="font-size:32px;display:block;margin-bottom:8px"></i>\u00a1Todos cumplen esta semana!</div>';document.getElementById('semana-content').innerHTML=html;return;}
-  html+=filtered.map(({m,mi,ok,noComp,falta,tieneFalta})=>{
+  const members=activeMembers();
+  const summary=members.map((m,mi)=>({m,mi:state.members.indexOf(m),ok:diasCumplidos(m,w),noComp:diasNoComp(m,w),falta:diasFalta(m,w),tf:tieneFalta(m,w)}));
+  const conFalta=summary.filter(x=>x.tf).length;
+  const porCobrar=summary.reduce((s,x)=>s+(x.tf?x.falta*SANCION:0),0);
+  let html=`<div class="metrics-row">
+    <div class="metric"><div class="metric-label">Con sanción</div><div class="metric-value">${conFalta}</div><div class="metric-sub">más de 2 faltas</div></div>
+    <div class="metric"><div class="metric-label">Generado</div><div class="metric-value" style="color:var(--red)">$${porCobrar.toLocaleString()}</div><div class="metric-sub">esta semana</div></div>
+  </div>
+  <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier día para ver el detalle</div>
+  <div class="day-grid">${DIAS.map(d=>`<div class="day-cell"><div class="day-label">${d}</div></div>`).join('')}</div>`;
+  const filtered=semanaFilter==='falta'?summary.filter(x=>x.tf):summary;
+  if(filtered.length===0){html+='<div style="text-align:center;padding:2rem;color:var(--text-3);font-size:13px"><i class="ti ti-confetti" style="font-size:32px;display:block;margin-bottom:8px"></i>¡Todos cumplen esta semana!</div>';document.getElementById('semana-content').innerHTML=html;return;}
+  html+=filtered.map(({m,mi,ok,noComp,falta,tf})=>{
     const dots=Array.from({length:7},(_,d)=>{
-      const e=getEntry(m,w,d);const dc=dotClass(e);
-      const eIdx=e?state.entries.indexOf(e):-1;
-      return'<div class="day-cell"><div class="day-dot '+dc+'" onclick="openDayDetail(\''+m.replace(/'/g,"\'")+'\','+mi+','+w+','+d+','+eIdx+')"><i class="ti ti-'+dotIcon(dc)+'" style="font-size:7px"></i></div></div>';
+      const e=getEntry(m,w,d);const dc=dotClass(e);const eIdx=e?state.entries.indexOf(e):-1;
+      return`<div class="day-cell"><div class="day-dot ${dc}" onclick="openDayDetail('${m.replace(/'/g,"\\'")}',${mi},${w},${d},${eIdx})"><i class="ti ti-${dotIcon(dc)}" style="font-size:7px"></i></div></div>`;
     }).join('');
-    let badge='';
-    if(noComp<=FALTAS_PERMITIDAS)badge='<span class="badge b-ok">Cumple</span>';
-    else badge='<span class="badge b-bad">+$'+(falta*SANCION)+' ('+(noComp-FALTAS_PERMITIDAS)+' de m\u00e1s)</span>';
-    return'<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">'+ok+'/'+MIN_DIAS+' d\u00edas \u00b7 '+noComp+' incompleto'+(noComp!==1?'s':'')+(noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':'')+'</div></div></div>'+badge+'</div><div class="day-grid" style="margin-bottom:0">'+dots+'</div></div>';
+    const badge=tf?`<span class="badge b-bad">+$${falta*SANCION} (${noComp-FALTAS_PERMITIDAS} de más)</span>`:'<span class="badge b-ok">Cumple</span>';
+    return`<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:${color(mi)}">${initials(m)}</div><div><div class="member-name">${m}</div><div class="member-sub">${ok}/${MIN_DIAS} días · ${noComp} incompleto${noComp!==1?'s':''}${noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':''}</div></div></div>${badge}</div><div class="day-grid" style="margin-bottom:0">${dots}</div></div>`;
   }).join('');
   document.getElementById('semana-content').innerHTML=html;
 }
 function renderSemana(){renderWeekTabs();renderSemanaContent();}
-function renderSanciones(){
-  const porSemana=Array.from({length:SEMANAS},(_,si)=>{const w=si+1;let sem=0;state.members.forEach(m=>{sem+=diasFalta(m,w)*SANCION;});return{w,sem};});
-  const totalSanc=totalSancion_global();const totalPagos=totalPagosMensuales();const bolsa=bolsaTotal();
-  const porMember=state.members.map((m,mi)=>({m,mi,sancion:totalSancion(m),faltas:totalFaltas(m)})).filter(x=>x.sancion>0).sort((a,b)=>b.sancion-a.sancion);
-  document.getElementById('sanciones-content').innerHTML='<div class="bolsa-banner"><div><div class="bolsa-label">Bolsa acumulada</div><div class="bolsa-amount">$'+bolsa.toLocaleString()+'</div><div class="bolsa-sublabel">sanciones + pagos mensuales + bajas</div></div><i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i></div><div class="metrics-row"><div class="metric"><div class="metric-label">Total en sanciones</div><div class="metric-value" style="color:var(--red)">$'+totalSanc.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Pagos mensuales</div><div class="metric-value" style="color:var(--green)">$'+totalPagos.toLocaleString()+'</div></div></div><div class="section-label">Sanciones por semana</div><div class="card">'+(porSemana.filter(x=>x.sem>0).map(x=>'<div class="sanc-row"><span style="color:var(--text-2)">Semana '+x.w+'</span><span class="sanc-amount">$'+x.sem.toLocaleString()+'</span></div>').join('')||'<p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones a\u00fan</p>')+'</div><div class="section-label">Por participante</div><div class="card">'+(porMember.map(x=>'<div class="team-row"><div class="member-left"><div class="avatar" style="background:'+color(x.mi)+'">'+initials(x.m)+'</div><div><div class="member-name">'+x.m+'</div><div class="member-sub">'+x.faltas+' d\u00eda'+(x.faltas!==1?'s':'')+' con sanci\u00f3n</div></div></div><span class="sanc-amount">$'+x.sancion.toLocaleString()+'</span></div>').join('')||'<p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones a\u00fan \u2014 \u00a1todos van bien!</p>')+'</div>';
+
+// ── SANCIONES ──────────────────────────────────────────
+function toggleSancPago(member,w,d){
+  const k=member+'|S'+w+'D'+d;
+  state.sancPagos[k]=!state.sancPagos[k];
+  post({type:'sancPago',key:k,pagado:state.sancPagos[k]});
+  renderSanciones();
 }
-function togglePago(member,mes){const k=member+'|'+mes;const ns=state.pagos[k]==='pagado'?'pendiente':'pagado';state.pagos[k]=ns;savePago(member,mes,ns);renderPagos();renderSanciones();}
+function toggleSancExtra(member){
+  const cur=state.sancExtra[member]||'debe';
+  const next=cur==='pagado'?'debe':'pagado';
+  state.sancExtra[member]=next;
+  post({type:'sancExtra',participante:member,status:next});
+  renderSanciones();
+}
+
+function renderSanciones(){
+  const bolsa=bolsaTotal();
+  const totalSanc=totalSancionGlobal();
+  const totalPagos=totalPagosMensuales();
+  const totalBajas=totalSalidasAnticipadas();
+  const totalExtra=totalSancExtra();
+
+  // members with sanctions
+  const porMember=state.members.map((m,mi)=>{
+    const sancion=totalSancion(m);const pagado=totalSancionPagada(m);
+    return{m,mi,sancion,pagado,faltas:totalFaltas(m)};
+  }).filter(x=>x.sancion>0).sort((a,b)=>b.sancion-a.sancion);
+
+  // extra sanction section
+  const membersConExtra=state.members.filter(m=>state.sancExtra[m]&&state.sancExtra[m]!=='');
+  const extraPagado=totalSancExtraPagada();
+
+  let html=`
+    <div class="bolsa-banner">
+      <div>
+        <div class="bolsa-label">Bolsa acumulada</div>
+        <div class="bolsa-amount">$${bolsa.toLocaleString()}</div>
+        <div class="bolsa-sublabel">sanciones + pagos + bajas + extra</div>
+      </div>
+      <i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i>
+    </div>
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-label">Sanciones</div><div class="metric-value" style="color:var(--red)">$${totalSanc.toLocaleString()}</div></div>
+      <div class="metric"><div class="metric-label">Pagos mensuales</div><div class="metric-value" style="color:var(--green)">$${totalPagos.toLocaleString()}</div></div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-label">Total por bajas</div><div class="metric-value" style="color:var(--red)">$${totalBajas.toLocaleString()}</div></div>
+      <div class="metric"><div class="metric-label">Sanción extraoficial</div><div class="metric-value" style="color:var(--amber)">$${totalExtra.toLocaleString()}</div></div>
+    </div>
+
+    <div class="section-label">Sanción extraoficial S1 ($200)</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Marca quién debe la sanción de la primera semana y quién ya pagó. Suma a la bolsa.</div>
+      ${state.members.map((m,i)=>{
+        const status=state.sancExtra[m]||'';
+        const pagado=status==='pagado';
+        const debe=status==='debe';
+        return`<div class="pago-row">
+          <div class="member-left">
+            <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px">${initials(m)}</div>
+            <span style="font-size:13px;font-weight:500">${m}</span>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center">
+            ${debe&&!pagado?'<span style="font-size:11px;color:var(--amber)">Debe $200</span>':''}
+            ${pagado?'<span style="font-size:11px;color:var(--green)">Pagó ✓</span>':''}
+            <button class="pago-btn ${pagado?'active-paid':debe?'active-pend':''}" onclick="toggleSancExtra('${m.replace(/'/g,"\\'")}')">
+              ${pagado?'Pagado':debe?'Marcar pagado':'Agregar'}
+            </button>
+            ${!status?'':''}
+          </div>
+        </div>`;
+      }).join('')}
+      ${membersConExtra.length?`<div style="font-size:11px;color:var(--text-3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">Cobrado: $${totalExtra.toLocaleString()} · Pagado: $${extraPagado.toLocaleString()} · Pendiente: $${(totalExtra-extraPagado).toLocaleString()}</div>`:''}
+    </div>
+
+    <div class="section-label">Sanciones por día (pagos individuales)</div>
+    <div class="card">
+      ${porMember.length===0?'<p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones aún — ¡todos van bien!</p>':porMember.map(({m,mi,sancion,pagado,faltas})=>{
+        // collect all days with sanction
+        let daysHtml='';
+        for(let w=1;w<=SEMANAS;w++){
+          const nc=diasNoComp(m,w);
+          if(nc>FALTAS_PERMITIDAS){
+            let dayCount=0;
+            for(let d=0;d<7;d++){
+              const e=getEntry(m,w,d);
+              if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
+                dayCount++;
+                if(dayCount>FALTAS_PERMITIDAS){
+                  const k=m+'|S'+w+'D'+d;
+                  const isPaid=!!state.sancPagos[k];
+                  daysHtml+=`<div class="sancion-day-row">
+                    <div><span style="color:var(--text-2)">S${w} · ${DIAS_FULL[d]}</span><small style="display:block;font-size:10px;color:var(--text-3)">${e.tipo||''} · ${e.status}</small></div>
+                    <button class="pago-btn ${isPaid?'active-paid':'active-pend'}" onclick="toggleSancPago('${m.replace(/'/g,"\\'")}',${w},${d})">
+                      ${isPaid?'<i class="ti ti-check"></i> Pagado':'Pendiente'}
+                    </button>
+                  </div>`;
+                }
+              }
+            }
+          }
+        }
+        return`<div style="border-bottom:1px solid var(--border);margin-bottom:8px;padding-bottom:8px">
+          <div class="member-sanc-header" onclick="toggleSancDetail('sd${mi}')">
+            <div class="member-left">
+              <div class="avatar" style="background:${color(mi)}">${initials(m)}</div>
+              <div><div class="member-name">${m}</div><div class="member-sub">${faltas} día${faltas!==1?'s':''} · $${sancion.toLocaleString()} total · $${pagado.toLocaleString()} pagado</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              ${sancion-pagado>0?`<span class="sanc-amount">$${(sancion-pagado).toLocaleString()}</span>`:'<span style="font-size:12px;color:var(--green)">Al corriente ✓</span>'}
+              <i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-3)"></i>
+            </div>
+          </div>
+          <div class="member-sanc-days" id="sd${mi}">${daysHtml}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  document.getElementById('sanciones-content').innerHTML=html;
+}
+function toggleSancDetail(id){const el=document.getElementById(id);el.classList.toggle('open');}
+
+// ── PAGOS ──────────────────────────────────────────────
+function togglePago(member,mes){
+  const k=member+'|'+mes;const ns=state.pagos[k]==='pagado'?'pendiente':'pagado';
+  state.pagos[k]=ns;post({type:'pago',participante:member,mes,status:ns});
+  renderPagos();
+}
 function renderPagos(){
   const total=totalPagosMensuales();const posible=state.members.length*MESES.length*200;
   document.getElementById('pagos-total').textContent='$'+total.toLocaleString();
@@ -521,29 +679,92 @@ function renderPagos(){
   let html='';
   MESES.forEach(mes=>{
     const pagados=state.members.filter(m=>state.pagos[m+'|'+mes]==='pagado').length;
-    html+='<div class="card"><div class="month-header"><span>'+mes+' 2026</span><span class="month-summary">'+pagados+' pagaron \u00b7 '+(state.members.length-pagados)+' pendientes</span></div>'+state.members.map((m,i)=>{const pagado=state.pagos[m+'|'+mes]==='pagado';return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><span style="font-size:13px;font-weight:500">'+m+'</span></div><button class="pago-btn '+(pagado?'active-paid':'active-pend')+'" onclick="togglePago(\''+m.replace(/'/g,"\'")+'\',' + JSON.stringify(mes) + ')"> '+(pagado?'<i class="ti ti-check"></i> Pag\u00f3':'Pendiente')+'</button></div>';}).join('')+'</div>';
+    html+=`<div class="card"><div class="month-header"><span>${mes} 2026</span><span class="month-summary">${pagados} pagaron · ${state.members.length-pagados} pendientes</span></div>
+    ${state.members.map((m,i)=>{
+      const pagado=state.pagos[m+'|'+mes]==='pagado';
+      const inactivo=!!state.salidas[m];
+      return`<div class="pago-row" style="${inactivo?'opacity:.5':''}">
+        <div class="member-left">
+          <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px">${initials(m)}</div>
+          <span style="font-size:13px;font-weight:500">${m}${inactivo?' <span class="inactive-badge">Baja</span>':''}</span>
+        </div>
+        <button class="pago-btn ${pagado?'active-paid':'active-pend'}" onclick="togglePago('${m.replace(/'/g,"\\'")}','${mes}')">
+          ${pagado?'<i class="ti ti-check"></i> Pagó':'Pendiente'}
+        </button>
+      </div>`;
+    }).join('')}</div>`;
   });
   document.getElementById('pagos-content').innerHTML=html;
 }
-function toggleSalida(member){if(state.salidas[member]){delete state.salidas[member];saveSalida(member,'remove','');}else{const fecha=new Date().toISOString().split('T')[0];state.salidas[member]={fecha};saveSalida(member,'add',fecha);}renderSalidas();renderSanciones();}
+
+// ── SALIDAS ────────────────────────────────────────────
+function toggleSalida(member){
+  if(state.salidas[member]){delete state.salidas[member];post({type:'salida',participante:member,action:'remove',fecha:''});}
+  else{const fecha=new Date().toISOString().split('T')[0];state.salidas[member]={fecha};post({type:'salida',participante:member,action:'add',fecha});}
+  renderSalidas();populateSelects();
+}
 function renderSalidas(){
-  document.getElementById('salidas-total').textContent='$'+totalSalidasAnticipadas().toLocaleString();
-  document.getElementById('salidas-content').innerHTML=state.members.map((m,i)=>{const salio=!!state.salidas[m];return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500">'+m+'</span>'+(salio?'<div style="font-size:10px;color:var(--red)">Baja registrada \u00b7 '+state.salidas[m].fecha+'</div>':'')+'</div></div><button class="pago-btn '+(salio?'active-pend':'active-paid')+'" onclick="toggleSalida(\''+m.replace(/'/g,"\'")+'\')">'+(salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo')+'</button></div>';}).join('');
+  const total=totalSalidasAnticipadas();const bajas=Object.keys(state.salidas).length;
+  document.getElementById('salidas-total').textContent='$'+total.toLocaleString();
+  document.getElementById('salidas-count').textContent=bajas;
+  document.getElementById('salidas-total-members').textContent=state.members.length;
+  document.getElementById('salidas-content').innerHTML=state.members.map((m,i)=>{
+    const salio=!!state.salidas[m];
+    return`<div class="pago-row">
+      <div class="member-left">
+        <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px;${salio?'opacity:.6':''}">${initials(m)}</div>
+        <div>
+          <span style="font-size:13px;font-weight:500;${salio?'color:var(--text-3)':''}">${m}</span>
+          ${salio?`<div style="font-size:10px;color:var(--red)">Baja el ${state.salidas[m].fecha} · $1,000 a la bolsa</div>`:''}
+        </div>
+      </div>
+      <button class="pago-btn ${salio?'active-pend':'active-paid'}" onclick="toggleSalida('${m.replace(/'/g,"\\'")}')">
+        ${salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo'}
+      </button>
+    </div>`;
+  }).join('');
 }
+
+// ── EQUIPO ─────────────────────────────────────────────
 function renderEquipo(){
-  document.getElementById('equipo-count').textContent='('+state.members.length+')';
-  document.getElementById('equipo-lista').innerHTML=state.members.map((m,i)=>{let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);return'<div class="team-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">'+f+' d\u00eda'+(f!==1?'s':'')+' con sanci\u00f3n \u00b7 $'+(f*SANCION).toLocaleString()+'</div></div></div><button class="btn-del" onclick="removeMember('+i+')" aria-label="Eliminar '+m+'"><i class="ti ti-trash"></i></button></div>';}).join('');
+  document.getElementById('equipo-count').textContent='('+state.members.length+' total · '+activeMembers().length+' activos)';
+  document.getElementById('equipo-lista').innerHTML=state.members.map((m,i)=>{
+    const inactivo=!!state.salidas[m];let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);
+    return`<div class="team-row" style="${inactivo?'opacity:.5':''}">
+      <div class="member-left">
+        <div class="avatar" style="background:${color(i)}">${initials(m)}</div>
+        <div>
+          <div class="member-name">${m} ${inactivo?'<span class="inactive-badge">Baja</span>':''}</div>
+          <div class="member-sub">${f} día${f!==1?'s':''} con sanción · $${(f*SANCION).toLocaleString()}</div>
+        </div>
+      </div>
+      <button class="btn-del" onclick="removeMember(${i})"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
 }
-function addMember(){const inp=document.getElementById('inp-nuevo');const name=inp.value.trim();if(!name)return;if(state.members.includes(name)){toast('Ya existe',false);return;}state.members.push(name);inp.value='';saveMiembro(name,'add');populateSelects();renderEquipo();toast(name+' agregado');}
-function removeMember(i){const name=state.members[i];state.members.splice(i,1);saveMiembro(name,'remove');populateSelects();renderEquipo();toast(name+' eliminado',false);}
+function addMember(){
+  const inp=document.getElementById('inp-nuevo');const name=inp.value.trim();
+  if(!name)return;if(state.members.includes(name)){toast('Ya existe',false);return;}
+  state.members.push(name);inp.value='';post({type:'miembro',nombre:name,action:'add'});populateSelects();renderEquipo();toast(name+' agregado');
+}
+function removeMember(i){
+  const name=state.members[i];state.members.splice(i,1);
+  post({type:'miembro',nombre:name,action:'remove'});populateSelects();renderEquipo();toast(name+' eliminado',false);
+}
+
+// ── SELECTS ────────────────────────────────────────────
 function populateSelects(){
   const ms=document.getElementById('reg-member');const cur=ms.value;
-  ms.innerHTML='<option value="">\u2014 Selecciona \u2014</option>'+state.members.map((m,i)=>'<option value="'+i+'">'+m+'</option>').join('');
+  ms.innerHTML='<option value="">— Selecciona —</option>'+activeMembers().map(m=>{const i=state.members.indexOf(m);return`<option value="${i}">${m}</option>`;}).join('');
   ms.value=cur;
-  document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===state.currentWeek?'selected':'')+'>Semana '+(i+1)+'</option>').join('');
+  document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>
+    `<option value="${i+1}" ${i+1===state.currentWeek?'selected':''}>Semana ${i+1}</option>`).join('');
 }
+
+// ── INIT ───────────────────────────────────────────────
 document.getElementById('reg-fecha').value=new Date().toISOString().split('T')[0];
-buildTypeGrid();populateSelects();updateStatus();loadData();setInterval(loadData,60000);
+buildTypeGrid();populateSelects();updateStatus();
+loadData();setInterval(loadData,60000);
 </script>
 </body>
 </html>

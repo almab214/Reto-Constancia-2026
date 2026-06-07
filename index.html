@@ -134,12 +134,10 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .pago-btn.active-pend{background:var(--red-light);color:var(--red);border-color:#F09595}
 .month-header{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;justify-content:space-between}
 .month-summary{font-size:11px;color:var(--text-3)}
-.sancion-day-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
-.sancion-day-row:last-child{border-bottom:none}
-.member-sanc-header{display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer}
-.member-sanc-header:hover{opacity:.8}
-.member-sanc-days{display:none;padding-bottom:4px}
-.member-sanc-days.open{display:block}
+/* FIX: sancion day rows always visible */
+.sancion-member-block{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
+.sancion-member-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg)}
+.sancion-day-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-top:1px solid var(--border);background:var(--surface)}
 .inactive-badge{font-size:10px;padding:2px 7px;background:var(--bg);color:var(--text-3);border:1px solid var(--border);border-radius:20px;font-weight:600}
 </style>
 </head>
@@ -155,8 +153,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
-<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -166,7 +162,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <button class="modal-close" onclick="closeModal()">Cerrar</button>
   </div>
 </div>
-
 <nav class="nav">
   <button class="nav-btn active" onclick="go('registro',this)"><i class="ti ti-pencil"></i>Registro</button>
   <button class="nav-btn" onclick="go('semana',this)"><i class="ti ti-calendar-week"></i>Semana</button>
@@ -175,8 +170,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   <button class="nav-btn" onclick="go('salidas',this)"><i class="ti ti-door-exit"></i>Bajas</button>
   <button class="nav-btn" onclick="go('equipo',this)"><i class="ti ti-users"></i>Equipo</button>
 </nav>
-
-<!-- REGISTRO -->
 <div id="screen-registro" class="screen active">
   <div class="page-title">Nuevo registro</div>
   <div class="card">
@@ -224,8 +217,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   <div class="status-wrap"><div id="status-preview"></div></div><br>
   <button class="btn-save" onclick="guardar()"><i class="ti ti-device-floppy"></i> Guardar en el reto</button>
 </div>
-
-<!-- SEMANA -->
 <div id="screen-semana" class="screen">
   <div class="page-title">Vista semanal</div>
   <div class="week-tabs" id="week-tabs"></div>
@@ -235,25 +226,19 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   </div>
   <div id="semana-content"></div>
 </div>
-
-<!-- SANCIONES -->
 <div id="screen-sanciones" class="screen">
   <div class="page-title">Sanciones y bolsa</div>
   <div id="sanciones-content"></div>
 </div>
-
-<!-- PAGOS -->
 <div id="screen-pagos" class="screen">
   <div class="page-title">Pagos mensuales</div>
   <div class="card" style="background:var(--green-dark);border:none;margin-bottom:10px">
     <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Pagos recibidos</div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--green-mid)" id="pagos-total">$0</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles · puedes marcar meses futuros por adelantado</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles &middot; puedes marcar meses futuros por adelantado</div>
   </div>
   <div id="pagos-content"></div>
 </div>
-
-<!-- BAJAS -->
 <div id="screen-salidas" class="screen">
   <div class="page-title">Bajas y salidas anticipadas</div>
   <div class="metrics-row">
@@ -270,8 +255,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   </div>
   <div class="card" id="salidas-content"></div>
 </div>
-
-<!-- EQUIPO -->
 <div id="screen-equipo" class="screen">
   <div class="page-title">Equipo <span id="equipo-count" style="font-size:14px;color:var(--text-3);font-weight:400"></span></div>
   <div class="card" id="equipo-lista"></div>
@@ -280,7 +263,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <button class="btn-add" onclick="addMember()"><i class="ti ti-plus"></i> Agregar</button>
   </div>
 </div>
-
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNiyQ1-iseWKOK40MTtyP21h7DX-7Mm-g3sTyEIXH5NICHsftfzRDNk2BxrIH7N_y1/exec';
 const SEMANAS=13,MIN_DIAS=5,SANCION=200,FALTAS_PERMITIDAS=2;
@@ -302,26 +284,16 @@ const TIPOS=[
   {id:'Remo',label:'Remo',icon:'ti-anchor',warn:null},
   {id:'Senderismo',label:'Senderismo',icon:'ti-mountain',warn:null},
 ];
-
 let state={
   members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Analí','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodríguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
-  entries:[],
-  pagos:{},       // pagos mensuales: key = "nombre|Mes" → "pagado"|"pendiente"
-  salidas:{},     // bajas: key = nombre → {fecha}
-  sancPagos:{},   // pagos de sanciones dia a dia: key = "nombre|S1D3" → true/false
-  sancExtra:{},   // sanción extraoficial s1: key = nombre → "pagado"|"pendiente"|"debe"
-  currentWeek:1,
-  selectedType:'Carrera',
-  evidenceData:null,
+  entries:[],pagos:{},salidas:{},sancPagos:{},sancExtra:{},
+  currentWeek:1,selectedType:'Carrera',evidenceData:null,
 };
-
-// ── SYNC ────────────────────────────────────────────────
 function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
 async function loadData(){
   setSyncStatus('loading','Sincronizando...');
   try{
-    const res=await fetch(SCRIPT_URL);
-    const json=await res.json();
+    const res=await fetch(SCRIPT_URL);const json=await res.json();
     if(json.ok&&json.data){
       const d=json.data;
       if(d.registros)state.entries=d.registros.filter(r=>r.participante);
@@ -330,14 +302,11 @@ async function loadData(){
       if(d.salidas){state.salidas={};d.salidas.forEach(s=>{if(s.participante)state.salidas[s.participante]={fecha:s.fecha};});}
       if(d.sancPagos){state.sancPagos={};d.sancPagos.forEach(p=>{if(p.key)state.sancPagos[p.key]=p.pagado==='true'||p.pagado===true;});}
       if(d.sancExtra){state.sancExtra={};d.sancExtra.forEach(p=>{if(p.participante)state.sancExtra[p.participante]=p.status;});}
-      populateSelects();
-      setSyncStatus('ok','Sincronizado');
-    } else setSyncStatus('err','Error al cargar');
+      populateSelects();setSyncStatus('ok','Sincronizado');
+    }else setSyncStatus('err','Error al cargar');
   }catch(e){setSyncStatus('err','Sin conexión');}
 }
 async function post(body){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error al guardar');}}
-
-// ── HELPERS ────────────────────────────────────────────
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 function color(i){return COLORS[i%COLORS.length];}
 function toast(msg,ok=true){const t=document.getElementById('toast');t.textContent=msg;t.style.background=ok?'#22c55e':'#A32D2D';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
@@ -352,28 +321,37 @@ function totalSancion(m){return totalFaltas(m)*SANCION;}
 function totalSancionPagada(m){
   let p=0;
   for(let w=1;w<=SEMANAS;w++){
+    let dayCount=0;
     for(let d=0;d<7;d++){
       const e=getEntry(m,w,d);
       if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
-        const nc=diasNoComp(m,w);
-        // only days beyond the 2 allowed generate sanction
-        if(nc>FALTAS_PERMITIDAS){
-          const k=m+'|S'+w+'D'+d;
-          if(state.sancPagos[k])p+=SANCION;
-        }
+        dayCount++;
+        if(dayCount>FALTAS_PERMITIDAS){const k=m+'|S'+w+'D'+d;if(state.sancPagos[k])p+=SANCION;}
       }
     }
   }
   return p;
 }
-function totalSancExtra(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe'||v==='pendiente')t+=200;});return t;}
-function totalSancExtraPagada(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='pagado')t+=200;});return t;}
+// FIX 1: totalSancExtra counts ALL marked members (debe+pagado), since bolsa = money received
+// The money was paid regardless of status - "debe" = marked but not yet paid (still goes to bolsa as owed)
+// "pagado" = already paid (confirmed in bolsa)
+// We show both in bolsa, with separate tracking of paid vs pending
+function totalSancExtraEnBolsa(){
+  // Only count "pagado" as confirmed in bolsa
+  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='pagado')t+=200;});return t;
+}
+function totalSancExtraPendiente(){
+  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe')t+=200;});return t;
+}
+function totalSancExtraTotal(){
+  // Total marked (debe + pagado) = total that will go to bolsa
+  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe'||v==='pagado')t+=200;});return t;
+}
 function totalPagosMensuales(){let t=0;state.members.forEach(m=>{MESES.forEach(mes=>{if(state.pagos[m+'|'+mes]==='pagado')t+=200;});});return t;}
 function totalSalidasAnticipadas(){return Object.keys(state.salidas).length*1000;}
 function totalSancionGlobal(){let t=0;state.members.forEach(m=>t+=totalSancion(m));return t;}
-function bolsaTotal(){return totalSancionGlobal()+totalPagosMensuales()+totalSalidasAnticipadas()+totalSancExtra();}
-
-// ── TYPE GRID & RITMO ──────────────────────────────────
+// FIX 1: bolsa = confirmed payments only (pagado) + owed sanctions + bajas
+function bolsaTotal(){return totalSancionGlobal()+totalPagosMensuales()+totalSalidasAnticipadas()+totalSancExtraTotal();}
 function buildTypeGrid(){
   document.getElementById('type-grid').innerHTML=TIPOS.map(t=>
     `<button class="type-btn ${t.id===state.selectedType?'selected':''}" onclick="selType(this,'${t.id}')"><i class="ti ${t.icon}"></i>${t.label}</button>`).join('');
@@ -405,14 +383,10 @@ function selType(btn,id){
   const w=document.getElementById('type-warn');
   if(t&&t.warn){w.textContent=t.warn;w.classList.add('show');}else w.classList.remove('show');
   const rb=document.getElementById('ritmo-box');
-  if(id==='Carrera'||id==='Caminata'){
-    rb.className='ritmo-box show';
-    document.getElementById('ritmo-dist').value='';document.getElementById('ritmo-tiempo').value='';document.getElementById('ritmo-result').innerHTML='';
-  }else{rb.className='ritmo-box';document.getElementById('c1').classList.add('checked');}
+  if(id==='Carrera'||id==='Caminata'){rb.className='ritmo-box show';document.getElementById('ritmo-dist').value='';document.getElementById('ritmo-tiempo').value='';document.getElementById('ritmo-result').innerHTML='';}
+  else{rb.className='ritmo-box';document.getElementById('c1').classList.add('checked');}
   updateStatus();
 }
-
-// ── CHECKS & STATUS ────────────────────────────────────
 function toggle(id){document.getElementById(id).classList.toggle('checked');updateStatus();}
 function isChecked(id){return document.getElementById(id).classList.contains('checked');}
 function calcStatus(){
@@ -422,15 +396,13 @@ function calcStatus(){
   if(!isChecked('c2'))reasons.push('Sin foto de evidencia (lugar + selfie)');
   if(!isChecked('c3'))reasons.push('Actividad no visible en Strava');
   if(reasons.length>0)return{s:'Incompleto',cls:'s-inc',icon:'ti-alert-triangle',reasons};
-  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['Métricas incoherentes']};
+  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['étricas incoherentes']};
   return{s:'Completado',cls:'s-ok',icon:'ti-circle-check',reasons:[]};
 }
 function updateStatus(){
   const r=calcStatus();
   document.getElementById('status-preview').innerHTML=`<span class="status-pill ${r.cls}"><i class="ti ${r.icon}"></i>${r.s}</span>`;
 }
-
-// ── EVIDENCE ───────────────────────────────────────────
 function previewEv(input){
   const file=input.files[0];if(!file)return;
   if(file.size>5*1024*1024){toast('Imagen supera 5 MB',false);return;}
@@ -439,8 +411,6 @@ function previewEv(input){
   reader.readAsDataURL(file);
 }
 function clearEv(){state.evidenceData=null;document.getElementById('ev-file').value='';const p=document.getElementById('ev-preview');p.src='';p.classList.remove('show');document.getElementById('ev-clear').classList.remove('show');}
-
-// ── GUARDAR ────────────────────────────────────────────
 async function guardar(){
   const mi=document.getElementById('reg-member').value;
   const fecha=document.getElementById('reg-fecha').value;
@@ -463,35 +433,27 @@ async function guardar(){
   btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> Guardar en el reto';
   const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===semana&&+e.dia===d);
   if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
-  toast(res.s==='Completado'?`${member} — guardado`:(`${member} — ${res.s}`));
+  toast(res.s==='Completado'?member+' — guardado':member+' — '+res.s);
   document.getElementById('reg-notas').value='';clearEv();
   ['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).classList.add('checked'));
   updateStatus();
 }
-
-// ── NAV ────────────────────────────────────────────────
 function go(id,btn){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');btn.classList.add('active');
-  if(id==='semana')renderSemana();
-  if(id==='sanciones')renderSanciones();
-  if(id==='pagos')renderPagos();
-  if(id==='salidas')renderSalidas();
-  if(id==='equipo')renderEquipo();
+  if(id==='semana')renderSemana();if(id==='sanciones')renderSanciones();
+  if(id==='pagos')renderPagos();if(id==='salidas')renderSalidas();if(id==='equipo')renderEquipo();
 }
-
-// ── MODAL DÍA ──────────────────────────────────────────
 function openDayDetail(member,mi,w,d,eIdx){
   const entry=eIdx>=0?state.entries[eIdx]:null;
   document.getElementById('modal-title').textContent=member;
-  document.getElementById('modal-sub').textContent=`Semana ${w} — ${DIAS_FULL[d]}${entry&&entry.fecha?' · '+entry.fecha:''}`;
+  document.getElementById('modal-sub').textContent='Semana '+w+' — '+DIAS_FULL[d]+(entry&&entry.fecha?' · '+entry.fecha:'');
   let body='';
-  if(!entry){
-    body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registró actividad este día</small></div></div>';
-  }else{
+  if(!entry){body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registró actividad este día</small></div></div>';}
+  else{
     const sc=entry.status==='Completado'?'ok':'bad';
-    body+=`<div class="detail-row"><div class="detail-icon ${sc}"><i class="ti ti-${entry.status==='Completado'?'circle-check':'alert-triangle'}"></i></div><div class="detail-text"><strong>${entry.status}</strong><small>Actividad: ${entry.tipo||'—'}</small></div></div>`;
+    body+='<div class="detail-row"><div class="detail-icon '+sc+'"><i class="ti ti-'+(entry.status==='Completado'?'circle-check':'alert-triangle')+'"></i></div><div class="detail-text"><strong>'+entry.status+'</strong><small>Actividad: '+(entry.tipo||'—')+'</small></div></div>';
     [{key:'chk_tiempo',ok:'45 min o más en Strava',bad:'Menos de 45 minutos'},
      {key:'chk_foto',ok:'Foto del lugar + selfie subida',bad:'Sin foto de evidencia'},
      {key:'chk_visible',ok:'Actividad visible en Strava',bad:'Actividad no visible'},
@@ -499,21 +461,19 @@ function openDayDetail(member,mi,w,d,eIdx){
      {key:'chk_metricas',ok:'Métricas coherentes',bad:'Métricas incoherentes'}
     ].forEach(c=>{
       const isOk=entry[c.key]===true||entry[c.key]==='TRUE'||entry[c.key]==='true';
-      body+=`<div class="detail-row"><div class="detail-icon ${isOk?'ok':'bad'}"><i class="ti ti-${isOk?'check':'x'}"></i></div><div class="detail-text">${isOk?c.ok:c.bad}</div></div>`;
+      body+='<div class="detail-row"><div class="detail-icon '+(isOk?'ok':'bad')+'"><i class="ti ti-'+(isOk?'check':'x')+'"></i></div><div class="detail-text">'+(isOk?c.ok:c.bad)+'</div></div>';
     });
-    if(entry.notas)body+=`<div class="detail-row"><div class="detail-icon ok"><i class="ti ti-notes"></i></div><div class="detail-text">Notas<small>${entry.notas}</small></div></div>`;
+    if(entry.notas)body+='<div class="detail-row"><div class="detail-icon ok"><i class="ti ti-notes"></i></div><div class="detail-text">Notas<small>'+entry.notas+'</small></div></div>';
   }
   document.getElementById('modal-body').innerHTML=body;
   document.getElementById('modal-overlay').classList.add('show');
 }
 function closeModal(e){if(!e||e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('show');}
-
-// ── SEMANA ─────────────────────────────────────────────
 let semanaFilter='todos';
 function setFilter(f,btn){semanaFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSemanaContent();}
 function renderWeekTabs(){
   document.getElementById('week-tabs').innerHTML=Array.from({length:SEMANAS},(_,i)=>
-    `<button class="week-tab ${i+1===state.currentWeek?'active':''}" onclick="selectWeek(${i+1},this)">S${i+1}</button>`).join('');
+    '<button class="week-tab '+(i+1===state.currentWeek?'active':'')+'" onclick="selectWeek('+(i+1)+',this)">S'+(i+1)+'</button>').join('');
 }
 function selectWeek(w,btn){state.currentWeek=w;document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('reg-semana').value=w;renderSemanaContent();}
 function dotClass(e){if(!e)return'bad';if(e.status==='Completado')return'ok';if(['Incompleto','Sospechoso','Inválido'].includes(e.status))return'inc';return'bad';}
@@ -524,27 +484,22 @@ function renderSemanaContent(){
   const summary=members.map((m,mi)=>({m,mi:state.members.indexOf(m),ok:diasCumplidos(m,w),noComp:diasNoComp(m,w),falta:diasFalta(m,w),tf:tieneFalta(m,w)}));
   const conFalta=summary.filter(x=>x.tf).length;
   const porCobrar=summary.reduce((s,x)=>s+(x.tf?x.falta*SANCION:0),0);
-  let html=`<div class="metrics-row">
-    <div class="metric"><div class="metric-label">Con sanción</div><div class="metric-value">${conFalta}</div><div class="metric-sub">más de 2 faltas</div></div>
-    <div class="metric"><div class="metric-label">Generado</div><div class="metric-value" style="color:var(--red)">$${porCobrar.toLocaleString()}</div><div class="metric-sub">esta semana</div></div>
-  </div>
-  <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier día para ver el detalle</div>
-  <div class="day-grid">${DIAS.map(d=>`<div class="day-cell"><div class="day-label">${d}</div></div>`).join('')}</div>`;
+  let html='<div class="metrics-row"><div class="metric"><div class="metric-label">Con sanción</div><div class="metric-value">'+conFalta+'</div><div class="metric-sub">más de 2 faltas</div></div><div class="metric"><div class="metric-label">Generado</div><div class="metric-value" style="color:var(--red)">$'+porCobrar.toLocaleString()+'</div><div class="metric-sub">esta semana</div></div></div>';
+  html+='<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier día para ver el detalle</div>';
+  html+='<div class="day-grid">'+DIAS.map(d=>'<div class="day-cell"><div class="day-label">'+d+'</div></div>').join('')+'</div>';
   const filtered=semanaFilter==='falta'?summary.filter(x=>x.tf):summary;
   if(filtered.length===0){html+='<div style="text-align:center;padding:2rem;color:var(--text-3);font-size:13px"><i class="ti ti-confetti" style="font-size:32px;display:block;margin-bottom:8px"></i>¡Todos cumplen esta semana!</div>';document.getElementById('semana-content').innerHTML=html;return;}
   html+=filtered.map(({m,mi,ok,noComp,falta,tf})=>{
     const dots=Array.from({length:7},(_,d)=>{
       const e=getEntry(m,w,d);const dc=dotClass(e);const eIdx=e?state.entries.indexOf(e):-1;
-      return`<div class="day-cell"><div class="day-dot ${dc}" onclick="openDayDetail('${m.replace(/'/g,"\\'")}',${mi},${w},${d},${eIdx})"><i class="ti ti-${dotIcon(dc)}" style="font-size:7px"></i></div></div>`;
+      return'<div class="day-cell"><div class="day-dot '+dc+'" onclick="openDayDetail(''+m.replace(/'/g,"\'")+'','+mi+','+w+','+d+','+eIdx+')"><i class="ti ti-'+dotIcon(dc)+'" style="font-size:7px"></i></div></div>';
     }).join('');
-    const badge=tf?`<span class="badge b-bad">+$${falta*SANCION} (${noComp-FALTAS_PERMITIDAS} de más)</span>`:'<span class="badge b-ok">Cumple</span>';
-    return`<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:${color(mi)}">${initials(m)}</div><div><div class="member-name">${m}</div><div class="member-sub">${ok}/${MIN_DIAS} días · ${noComp} incompleto${noComp!==1?'s':''}${noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':''}</div></div></div>${badge}</div><div class="day-grid" style="margin-bottom:0">${dots}</div></div>`;
+    const badge=tf?'<span class="badge b-bad">+$'+falta*SANCION+' ('+(noComp-FALTAS_PERMITIDAS)+' de más)</span>':'<span class="badge b-ok">Cumple</span>';
+    return'<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">'+ok+'/'+MIN_DIAS+' días · '+noComp+' incompleto'+(noComp!==1?'s':'')+(noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':'')+'</div></div></div>'+badge+'</div><div class="day-grid" style="margin-bottom:0">'+dots+'</div></div>';
   }).join('');
   document.getElementById('semana-content').innerHTML=html;
 }
 function renderSemana(){renderWeekTabs();renderSemanaContent();}
-
-// ── SANCIONES ──────────────────────────────────────────
 function toggleSancPago(member,w,d){
   const k=member+'|S'+w+'D'+d;
   state.sancPagos[k]=!state.sancPagos[k];
@@ -552,125 +507,75 @@ function toggleSancPago(member,w,d){
   renderSanciones();
 }
 function toggleSancExtra(member){
-  const cur=state.sancExtra[member]||'debe';
-  const next=cur==='pagado'?'debe':'pagado';
+  const cur=state.sancExtra[member]||'';
+  let next;
+  if(cur==='')next='debe';
+  else if(cur==='debe')next='pagado';
+  else next='debe';
   state.sancExtra[member]=next;
   post({type:'sancExtra',participante:member,status:next});
   renderSanciones();
 }
-
 function renderSanciones(){
   const bolsa=bolsaTotal();
   const totalSanc=totalSancionGlobal();
   const totalPagos=totalPagosMensuales();
   const totalBajas=totalSalidasAnticipadas();
-  const totalExtra=totalSancExtra();
-
-  // members with sanctions
+  const extraTotal=totalSancExtraTotal();
+  const extraPagado=totalSancExtraEnBolsa();
+  const extraPend=totalSancExtraPendiente();
   const porMember=state.members.map((m,mi)=>{
     const sancion=totalSancion(m);const pagado=totalSancionPagada(m);
     return{m,mi,sancion,pagado,faltas:totalFaltas(m)};
   }).filter(x=>x.sancion>0).sort((a,b)=>b.sancion-a.sancion);
 
-  // extra sanction section
-  const membersConExtra=state.members.filter(m=>state.sancExtra[m]&&state.sancExtra[m]!=='');
-  const extraPagado=totalSancExtraPagada();
+  let html='<div class="bolsa-banner"><div><div class="bolsa-label">Bolsa acumulada</div><div class="bolsa-amount">$'+bolsa.toLocaleString()+'</div><div class="bolsa-sublabel">sanciones + pagos + bajas + extra</div></div><i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i></div>';
+  html+='<div class="metrics-row"><div class="metric"><div class="metric-label">Sanciones</div><div class="metric-value" style="color:var(--red)">$'+totalSanc.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Pagos mensuales</div><div class="metric-value" style="color:var(--green)">$'+totalPagos.toLocaleString()+'</div></div></div>';
+  html+='<div class="metrics-row"><div class="metric"><div class="metric-label">Total por bajas</div><div class="metric-value" style="color:var(--red)">$'+totalBajas.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Sanción extraoficial</div><div class="metric-value" style="color:var(--amber)">$'+extraTotal.toLocaleString()+'</div><div class="metric-sub">$'+extraPagado.toLocaleString()+' pagado · $'+extraPend.toLocaleString()+' pendiente</div></div></div>';
 
-  let html=`
-    <div class="bolsa-banner">
-      <div>
-        <div class="bolsa-label">Bolsa acumulada</div>
-        <div class="bolsa-amount">$${bolsa.toLocaleString()}</div>
-        <div class="bolsa-sublabel">sanciones + pagos + bajas + extra</div>
-      </div>
-      <i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i>
-    </div>
-    <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Sanciones</div><div class="metric-value" style="color:var(--red)">$${totalSanc.toLocaleString()}</div></div>
-      <div class="metric"><div class="metric-label">Pagos mensuales</div><div class="metric-value" style="color:var(--green)">$${totalPagos.toLocaleString()}</div></div>
-    </div>
-    <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Total por bajas</div><div class="metric-value" style="color:var(--red)">$${totalBajas.toLocaleString()}</div></div>
-      <div class="metric"><div class="metric-label">Sanción extraoficial</div><div class="metric-value" style="color:var(--amber)">$${totalExtra.toLocaleString()}</div></div>
-    </div>
+  // FIX 2: extra sanction - 3 states: sin marcar → debe → pagado → debe (cycle)
+  html+='<div class="section-label">Sanción extraoficial S1 ($200)</div>';
+  html+='<div class="card"><div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Toca el botón para cambiar el estado: <strong>Sin marcar → Debe → Pagado</strong>. Solo las marcadas suman a la bolsa.</div>';
+  html+=state.members.map((m,i)=>{
+    const status=state.sancExtra[m]||'';
+    const pagado=status==='pagado';const debe=status==='debe';
+    let btnClass=pagado?'active-paid':debe?'active-pend':'';
+    let btnLabel=pagado?'<i class="ti ti-check"></i> Pagó':debe?'Pendiente de pago':'Sin sanción';
+    let statusLabel=pagado?'<span style="font-size:10px;color:var(--green);margin-right:4px">$200 pagado</span>':debe?'<span style="font-size:10px;color:var(--amber);margin-right:4px">Debe $200</span>':'';
+    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500">'+m+'</span>'+statusLabel+'</div></div><button class="pago-btn '+btnClass+'" onclick="toggleSancExtra(''+m.replace(/'/g,"\'")+'')" style="white-space:nowrap">'+btnLabel+'</button></div>';
+  }).join('');
+  html+='</div>';
 
-    <div class="section-label">Sanción extraoficial S1 ($200)</div>
-    <div class="card">
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Marca quién debe la sanción de la primera semana y quién ya pagó. Suma a la bolsa.</div>
-      ${state.members.map((m,i)=>{
-        const status=state.sancExtra[m]||'';
-        const pagado=status==='pagado';
-        const debe=status==='debe';
-        return`<div class="pago-row">
-          <div class="member-left">
-            <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px">${initials(m)}</div>
-            <span style="font-size:13px;font-weight:500">${m}</span>
-          </div>
-          <div style="display:flex;gap:5px;align-items:center">
-            ${debe&&!pagado?'<span style="font-size:11px;color:var(--amber)">Debe $200</span>':''}
-            ${pagado?'<span style="font-size:11px;color:var(--green)">Pagó ✓</span>':''}
-            <button class="pago-btn ${pagado?'active-paid':debe?'active-pend':''}" onclick="toggleSancExtra('${m.replace(/'/g,"\\'")}')">
-              ${pagado?'Pagado':debe?'Marcar pagado':'Agregar'}
-            </button>
-            ${!status?'':''}
-          </div>
-        </div>`;
-      }).join('')}
-      ${membersConExtra.length?`<div style="font-size:11px;color:var(--text-3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">Cobrado: $${totalExtra.toLocaleString()} · Pagado: $${extraPagado.toLocaleString()} · Pendiente: $${(totalExtra-extraPagado).toLocaleString()}</div>`:''}
-    </div>
-
-    <div class="section-label">Sanciones por día (pagos individuales)</div>
-    <div class="card">
-      ${porMember.length===0?'<p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones aún — ¡todos van bien!</p>':porMember.map(({m,mi,sancion,pagado,faltas})=>{
-        // collect all days with sanction
-        let daysHtml='';
-        for(let w=1;w<=SEMANAS;w++){
-          const nc=diasNoComp(m,w);
-          if(nc>FALTAS_PERMITIDAS){
-            let dayCount=0;
-            for(let d=0;d<7;d++){
-              const e=getEntry(m,w,d);
-              if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
-                dayCount++;
-                if(dayCount>FALTAS_PERMITIDAS){
-                  const k=m+'|S'+w+'D'+d;
-                  const isPaid=!!state.sancPagos[k];
-                  daysHtml+=`<div class="sancion-day-row">
-                    <div><span style="color:var(--text-2)">S${w} · ${DIAS_FULL[d]}</span><small style="display:block;font-size:10px;color:var(--text-3)">${e.tipo||''} · ${e.status}</small></div>
-                    <button class="pago-btn ${isPaid?'active-paid':'active-pend'}" onclick="toggleSancPago('${m.replace(/'/g,"\\'")}',${w},${d})">
-                      ${isPaid?'<i class="ti ti-check"></i> Pagado':'Pendiente'}
-                    </button>
-                  </div>`;
-                }
-              }
+  // FIX 2: sanction day rows - always visible, no collapse needed
+  html+='<div class="section-label">Pagos de sanciones por día</div>';
+  if(porMember.length===0){
+    html+='<div class="card"><p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones aún — ¡todos van bien!</p></div>';
+  } else {
+    html+=porMember.map(({m,mi,sancion,pagado,faltas})=>{
+      let daysHtml='';
+      for(let w=1;w<=SEMANAS;w++){
+        let dayCount=0;
+        for(let d=0;d<7;d++){
+          const e=getEntry(m,w,d);
+          if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
+            dayCount++;
+            if(dayCount>FALTAS_PERMITIDAS){
+              const k=m+'|S'+w+'D'+d;const isPaid=!!state.sancPagos[k];
+              daysHtml+='<div class="sancion-day-row"><div><span style="font-weight:600;color:var(--text)">S'+w+' · '+DIAS_FULL[d]+'</span><small style="display:block;font-size:10px;color:var(--text-3)">'+(e.tipo||'')+' · '+e.status+'</small></div><button class="pago-btn '+(isPaid?'active-paid':'active-pend')+'" onclick="toggleSancPago(''+m.replace(/'/g,"\'")+'',' +w+','+d+')">'+(isPaid?'<i class="ti ti-check"></i> Pagado $200':'Pendiente $200')+'</button></div>';
             }
           }
         }
-        return`<div style="border-bottom:1px solid var(--border);margin-bottom:8px;padding-bottom:8px">
-          <div class="member-sanc-header" onclick="toggleSancDetail('sd${mi}')">
-            <div class="member-left">
-              <div class="avatar" style="background:${color(mi)}">${initials(m)}</div>
-              <div><div class="member-name">${m}</div><div class="member-sub">${faltas} día${faltas!==1?'s':''} · $${sancion.toLocaleString()} total · $${pagado.toLocaleString()} pagado</div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              ${sancion-pagado>0?`<span class="sanc-amount">$${(sancion-pagado).toLocaleString()}</span>`:'<span style="font-size:12px;color:var(--green)">Al corriente ✓</span>'}
-              <i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-3)"></i>
-            </div>
-          </div>
-          <div class="member-sanc-days" id="sd${mi}">${daysHtml}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
+      }
+      const pendiente=sancion-pagado;
+      return'<div class="sancion-member-block"><div class="sancion-member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">$'+sancion.toLocaleString()+' total · $'+pagado.toLocaleString()+' pagado</div></div></div>'+( pendiente>0?'<span class="sanc-amount">$'+pendiente.toLocaleString()+' pendiente</span>':'<span style="font-size:12px;color:var(--green);font-weight:600">Al corriente ✓</span>')+'</div>'+daysHtml+'</div>';
+    }).join('');
+  }
 
   document.getElementById('sanciones-content').innerHTML=html;
 }
-function toggleSancDetail(id){const el=document.getElementById(id);el.classList.toggle('open');}
-
-// ── PAGOS ──────────────────────────────────────────────
 function togglePago(member,mes){
   const k=member+'|'+mes;const ns=state.pagos[k]==='pagado'?'pendiente':'pagado';
-  state.pagos[k]=ns;post({type:'pago',participante:member,mes,status:ns});
-  renderPagos();
+  state.pagos[k]=ns;post({type:'pago',participante:member,mes,status:ns});renderPagos();
 }
 function renderPagos(){
   const total=totalPagosMensuales();const posible=state.members.length*MESES.length*200;
@@ -679,25 +584,15 @@ function renderPagos(){
   let html='';
   MESES.forEach(mes=>{
     const pagados=state.members.filter(m=>state.pagos[m+'|'+mes]==='pagado').length;
-    html+=`<div class="card"><div class="month-header"><span>${mes} 2026</span><span class="month-summary">${pagados} pagaron · ${state.members.length-pagados} pendientes</span></div>
-    ${state.members.map((m,i)=>{
-      const pagado=state.pagos[m+'|'+mes]==='pagado';
-      const inactivo=!!state.salidas[m];
-      return`<div class="pago-row" style="${inactivo?'opacity:.5':''}">
-        <div class="member-left">
-          <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px">${initials(m)}</div>
-          <span style="font-size:13px;font-weight:500">${m}${inactivo?' <span class="inactive-badge">Baja</span>':''}</span>
-        </div>
-        <button class="pago-btn ${pagado?'active-paid':'active-pend'}" onclick="togglePago('${m.replace(/'/g,"\\'")}','${mes}')">
-          ${pagado?'<i class="ti ti-check"></i> Pagó':'Pendiente'}
-        </button>
-      </div>`;
-    }).join('')}</div>`;
+    html+='<div class="card"><div class="month-header"><span>'+mes+' 2026</span><span class="month-summary">'+pagados+' pagaron · '+(state.members.length-pagados)+' pendientes</span></div>';
+    html+=state.members.map((m,i)=>{
+      const pagado=state.pagos[m+'|'+mes]==='pagado';const inactivo=!!state.salidas[m];
+      return'<div class="pago-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><span style="font-size:13px;font-weight:500">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</span></div><button class="pago-btn '+(pagado?'active-paid':'active-pend')+'" onclick="togglePago(''+m.replace(/'/g,"\'")+'',''+mes+'')">'+(pagado?'<i class="ti ti-check"></i> Pagó':'Pendiente')+'</button></div>';
+    }).join('');
+    html+='</div>';
   });
   document.getElementById('pagos-content').innerHTML=html;
 }
-
-// ── SALIDAS ────────────────────────────────────────────
 function toggleSalida(member){
   if(state.salidas[member]){delete state.salidas[member];post({type:'salida',participante:member,action:'remove',fecha:''});}
   else{const fecha=new Date().toISOString().split('T')[0];state.salidas[member]={fecha};post({type:'salida',participante:member,action:'add',fecha});}
@@ -710,36 +605,14 @@ function renderSalidas(){
   document.getElementById('salidas-total-members').textContent=state.members.length;
   document.getElementById('salidas-content').innerHTML=state.members.map((m,i)=>{
     const salio=!!state.salidas[m];
-    return`<div class="pago-row">
-      <div class="member-left">
-        <div class="avatar" style="background:${color(i)};width:28px;height:28px;font-size:11px;${salio?'opacity:.6':''}">${initials(m)}</div>
-        <div>
-          <span style="font-size:13px;font-weight:500;${salio?'color:var(--text-3)':''}">${m}</span>
-          ${salio?`<div style="font-size:10px;color:var(--red)">Baja el ${state.salidas[m].fecha} · $1,000 a la bolsa</div>`:''}
-        </div>
-      </div>
-      <button class="pago-btn ${salio?'active-pend':'active-paid'}" onclick="toggleSalida('${m.replace(/'/g,"\\'")}')">
-        ${salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo'}
-      </button>
-    </div>`;
+    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px;'+(salio?'opacity:.6':'')+'">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500;'+(salio?'color:var(--text-3)':'')+'">'+m+'</span>'+(salio?'<div style="font-size:10px;color:var(--red)">Baja el '+state.salidas[m].fecha+' · $1,000 a la bolsa</div>':'')+'</div></div><button class="pago-btn '+(salio?'active-pend':'active-paid')+'" onclick="toggleSalida(''+m.replace(/'/g,"\'")+'''+')">'+(salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo')+'</button></div>';
   }).join('');
 }
-
-// ── EQUIPO ─────────────────────────────────────────────
 function renderEquipo(){
   document.getElementById('equipo-count').textContent='('+state.members.length+' total · '+activeMembers().length+' activos)';
   document.getElementById('equipo-lista').innerHTML=state.members.map((m,i)=>{
     const inactivo=!!state.salidas[m];let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);
-    return`<div class="team-row" style="${inactivo?'opacity:.5':''}">
-      <div class="member-left">
-        <div class="avatar" style="background:${color(i)}">${initials(m)}</div>
-        <div>
-          <div class="member-name">${m} ${inactivo?'<span class="inactive-badge">Baja</span>':''}</div>
-          <div class="member-sub">${f} día${f!==1?'s':''} con sanción · $${(f*SANCION).toLocaleString()}</div>
-        </div>
-      </div>
-      <button class="btn-del" onclick="removeMember(${i})"><i class="ti ti-trash"></i></button>
-    </div>`;
+    return'<div class="team-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+'">'+initials(m)+'</div><div><div class="member-name">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</div><div class="member-sub">'+f+' día'+(f!==1?'s':'')+' con sanción · $'+(f*SANCION).toLocaleString()+'</div></div></div><button class="btn-del" onclick="removeMember('+i+')"><i class="ti ti-trash"></i></button></div>';
   }).join('');
 }
 function addMember(){
@@ -751,17 +624,12 @@ function removeMember(i){
   const name=state.members[i];state.members.splice(i,1);
   post({type:'miembro',nombre:name,action:'remove'});populateSelects();renderEquipo();toast(name+' eliminado',false);
 }
-
-// ── SELECTS ────────────────────────────────────────────
 function populateSelects(){
   const ms=document.getElementById('reg-member');const cur=ms.value;
-  ms.innerHTML='<option value="">— Selecciona —</option>'+activeMembers().map(m=>{const i=state.members.indexOf(m);return`<option value="${i}">${m}</option>`;}).join('');
+  ms.innerHTML='<option value="">— Selecciona —</option>'+activeMembers().map(m=>{const i=state.members.indexOf(m);return'<option value="'+i+'">'+m+'</option>';}).join('');
   ms.value=cur;
-  document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>
-    `<option value="${i+1}" ${i+1===state.currentWeek?'selected':''}>Semana ${i+1}</option>`).join('');
+  document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===state.currentWeek?'selected':'')+'>Semana '+(i+1)+'</option>').join('');
 }
-
-// ── INIT ───────────────────────────────────────────────
 document.getElementById('reg-fecha').value=new Date().toISOString().split('T')[0];
 buildTypeGrid();populateSelects();updateStatus();
 loadData();setInterval(loadData,60000);

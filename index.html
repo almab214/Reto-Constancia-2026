@@ -74,7 +74,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .day-dot.ok{background:var(--green-light);border-color:var(--green-mid);color:var(--green-dark)}
 .day-dot.inc{background:var(--amber-light);border-color:#EF9F27;color:var(--amber)}
 .day-dot.bad{background:var(--red-light);border-color:#F09595;color:var(--red)}
-.day-dot.paid{background:var(--blue-light);border-color:#85B7EB;color:var(--blue)}
 .member-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;margin-bottom:8px}
 .member-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .member-left{display:flex;align-items:center;gap:9px}
@@ -82,13 +81,11 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .member-name{font-size:14px;font-weight:600;color:var(--text)}
 .member-sub{font-size:10px;color:var(--text-3);margin-top:1px}
 .badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
-.b-ok{background:var(--green-light);color:var(--green-dark)}.b-bad{background:var(--red-light);color:var(--red)}.b-paid{background:var(--blue-light);color:var(--blue)}
+.b-ok{background:var(--green-light);color:var(--green-dark)}.b-bad{background:var(--red-light);color:var(--red)}
 .bolsa-banner{background:var(--green-dark);border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
 .bolsa-amount{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--green-mid)}
 .bolsa-label{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px}
 .bolsa-sublabel{font-size:11px;color:rgba(255,255,255,0.4)}
-.sanc-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
-.sanc-row:last-child{border-bottom:none}
 .sanc-amount{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--red)}
 .team-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
 .team-row:last-child{border-bottom:none}
@@ -101,9 +98,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text-3)}
 .sync-dot.ok{background:#22c55e}.sync-dot.loading{background:#f59e0b;animation:pulse 1s infinite}.sync-dot.err{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.loading-state{text-align:center;padding:2rem;color:var(--text-3);font-size:13px}
-.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px}
-@keyframes spin{to{transform:rotate(360deg)}}
 .warn-box{background:var(--amber-light);border-radius:var(--radius-sm);padding:8px 11px;font-size:12px;color:var(--amber);margin-top:8px;display:none}
 .warn-box.show{display:block}
 .ritmo-box{border-radius:var(--radius-sm);padding:12px;margin-top:8px;display:none;background:var(--green-light);border:1px solid var(--green-mid)}
@@ -134,7 +128,6 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 .pago-btn.active-pend{background:var(--red-light);color:var(--red);border-color:#F09595}
 .month-header{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--text);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;justify-content:space-between}
 .month-summary{font-size:11px;color:var(--text-3)}
-/* FIX: sancion day rows always visible */
 .sancion-member-block{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
 .sancion-member-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg)}
 .sancion-day-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-top:1px solid var(--border);background:var(--surface)}
@@ -148,8 +141,8 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
     <div class="mode-badge">&#9889; Modo Atleta</div>
   </div>
   <div class="sync-bar">
-    <div class="sync-dot loading" id="sync-dot"></div>
-    <span id="sync-label">Cargando...</span>
+    <div class="sync-dot ok" id="sync-dot"></div>
+    <span id="sync-label">Listo</span>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -235,7 +228,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   <div class="card" style="background:var(--green-dark);border:none;margin-bottom:10px">
     <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Pagos recibidos</div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--green-mid)" id="pagos-total">$0</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles &middot; puedes marcar meses futuros por adelantado</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4)">de $<span id="pagos-posible">0</span> posibles</div>
   </div>
   <div id="pagos-content"></div>
 </div>
@@ -267,33 +260,40 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbytGu4wNv_I1CkpER2VhCakKpsu1s8tdrnnK01M_LitjSKCpr5dU4bv9P2YP8mHqV7u/exec';
 const SEMANAS=13,MIN_DIAS=5,SANCION=200,FALTAS_PERMITIDAS=2;
 const DIAS=['D','L','M','M','J','V','S'];
-const DIAS_FULL=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DIAS_FULL=['Domingo','Lunes','Martes','Mi\u00e9rcoles','Jueves','Viernes','S\u00e1bado'];
 const MESES=['Junio','Julio','Agosto'];
 const COLORS=['#0077A8','#3B82F6','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#06b6d4','#e11d48','#0ea5e9','#10b981','#7c3aed','#db2777','#0891b2','#65a30d','#dc2626','#ca8a04','#0284c7','#16a34a','#9333ea','#be185d','#FC4C02'];
 const TIPOS=[
   {id:'Carrera',label:'Carrera/Trote',icon:'ti-run',warn:null},
   {id:'Caminata',label:'Caminata',icon:'ti-walk',warn:null},
   {id:'Ciclismo',label:'Ciclismo',icon:'ti-bike',warn:null},
-  {id:'Natación',label:'Natación',icon:'ti-ripple',warn:'No cuentan pool parties, snorkel ni tiempo social.'},
+  {id:'Nataci\u00f3n',label:'Nataci\u00f3n',icon:'ti-ripple',warn:'No cuentan pool parties, snorkel ni tiempo social.'},
   {id:'Surf de Remo',label:'Surf de remo',icon:'ti-wave-sine',warn:null},
   {id:'Tenis',label:'Tenis',icon:'ti-tournament',warn:'Foto en cancha con raqueta requerida.'},
   {id:'Golf',label:'Golf',icon:'ti-flag',warn:'Foto en campo requerida.'},
   {id:'Gym',label:'Gym / Otro',icon:'ti-barbell',warn:null},
-  {id:'Yoga Casa',label:'Yoga casa',icon:'ti-heart',warn:'Máx 1 día/semana. Foto del espacio.'},
+  {id:'Yoga Casa',label:'Yoga casa',icon:'ti-heart',warn:'M\u00e1x 1 d\u00eda/semana. Foto del espacio.'},
   {id:'Yoga Clase',label:'Yoga clase',icon:'ti-building',warn:'Foto en el estudio requerida.'},
   {id:'Remo',label:'Remo',icon:'ti-anchor',warn:null},
   {id:'Senderismo',label:'Senderismo',icon:'ti-mountain',warn:null},
 ];
 let state={
-  members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Analí','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodríguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
+  members:['Alma A','Gabriela A','Roberto R','Rut A','Gerardo H','Helen','David A','Anal\u00ed','Ale Morales','Meli','Pato-Chelys','Dalia (Pescadilla)','Viri','Chelys','Frank','Ale Rodr\u00edguez','Aura','Berni','Ana Victoria','Toretto','Susy (Morena de Fuego)','Oldair','Carlos','Bea'],
   entries:[],pagos:{},salidas:{},sancPagos:{},sancExtra:{},
   currentWeek:1,selectedType:'Carrera',evidenceData:null,
 };
+
 function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
+
+// CRITICAL FIX: loadData runs fully async - never blocks UI
 async function loadData(){
   setSyncStatus('loading','Sincronizando...');
   try{
-    const res=await fetch(SCRIPT_URL);const json=await res.json();
+    const controller=new AbortController();
+    const tid=setTimeout(()=>controller.abort(),15000);
+    const res=await fetch(SCRIPT_URL,{signal:controller.signal});
+    clearTimeout(tid);
+    const json=await res.json();
     if(json.ok&&json.data){
       const d=json.data;
       if(d.registros)state.entries=d.registros.filter(r=>r.participante);
@@ -304,54 +304,41 @@ async function loadData(){
       if(d.sancExtra){state.sancExtra={};d.sancExtra.forEach(p=>{if(p.participante)state.sancExtra[p.participante]=p.status;});}
       populateSelects();setSyncStatus('ok','Sincronizado');
     }else setSyncStatus('err','Error al cargar');
-  }catch(e){setSyncStatus('err','Sin conexión');}
+  }catch(e){
+    if(e.name==='AbortError')setSyncStatus('err','Sin respuesta');
+    else setSyncStatus('err','Sin conexi\u00f3n');
+  }
 }
-async function post(body){try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});setSyncStatus('ok','Guardado');}catch(e){setSyncStatus('err','Error al guardar');}}
+
+async function post(body){
+  try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});setSyncStatus('ok','Guardado');}
+  catch(e){setSyncStatus('err','Error al guardar');}
+}
+
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 function color(i){return COLORS[i%COLORS.length];}
 function toast(msg,ok=true){const t=document.getElementById('toast');t.textContent=msg;t.style.background=ok?'#22c55e':'#A32D2D';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 function activeMembers(){return state.members.filter(m=>!state.salidas[m]);}
 function getEntry(m,w,d){return state.entries.find(e=>e.participante===m&&+e.semana===w&&+e.dia===d);}
 function diasCumplidos(m,w){let ok=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&e.status==='Completado')ok++;}return ok;}
-function diasNoComp(m,w){let f=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status))f++;}return f;}
+function diasNoComp(m,w){let f=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inv\u00e1lido','Sospechoso'].includes(e.status))f++;}return f;}
 function diasFalta(m,w){return Math.max(0,diasNoComp(m,w)-FALTAS_PERMITIDAS);}
 function tieneFalta(m,w){return diasNoComp(m,w)>FALTAS_PERMITIDAS;}
 function totalFaltas(m){let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);return f;}
 function totalSancion(m){return totalFaltas(m)*SANCION;}
 function totalSancionPagada(m){
   let p=0;
-  for(let w=1;w<=SEMANAS;w++){
-    let dayCount=0;
-    for(let d=0;d<7;d++){
-      const e=getEntry(m,w,d);
-      if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
-        dayCount++;
-        if(dayCount>FALTAS_PERMITIDAS){const k=m+'|S'+w+'D'+d;if(state.sancPagos[k])p+=SANCION;}
-      }
-    }
-  }
+  for(let w=1;w<=SEMANAS;w++){let dc=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inv\u00e1lido','Sospechoso'].includes(e.status)){dc++;if(dc>FALTAS_PERMITIDAS){const k=m+'|S'+w+'D'+d;if(state.sancPagos[k])p+=SANCION;}}}}
   return p;
-}
-// FIX 1: totalSancExtra counts ALL marked members (debe+pagado), since bolsa = money received
-// The money was paid regardless of status - "debe" = marked but not yet paid (still goes to bolsa as owed)
-// "pagado" = already paid (confirmed in bolsa)
-// We show both in bolsa, with separate tracking of paid vs pending
-function totalSancExtraEnBolsa(){
-  // Only count "pagado" as confirmed in bolsa
-  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='pagado')t+=200;});return t;
-}
-function totalSancExtraPendiente(){
-  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe')t+=200;});return t;
-}
-function totalSancExtraTotal(){
-  // Total marked (debe + pagado) = total that will go to bolsa
-  let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe'||v==='pagado')t+=200;});return t;
 }
 function totalPagosMensuales(){let t=0;state.members.forEach(m=>{MESES.forEach(mes=>{if(state.pagos[m+'|'+mes]==='pagado')t+=200;});});return t;}
 function totalSalidasAnticipadas(){return Object.keys(state.salidas).length*1000;}
 function totalSancionGlobal(){let t=0;state.members.forEach(m=>t+=totalSancion(m));return t;}
-// FIX 1: bolsa = confirmed payments only (pagado) + owed sanctions + bajas
+function totalSancExtraTotal(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe'||v==='pagado')t+=200;});return t;}
+function totalSancExtraEnBolsa(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='pagado')t+=200;});return t;}
+function totalSancExtraPendiente(){let t=0;Object.values(state.sancExtra).forEach(v=>{if(v==='debe')t+=200;});return t;}
 function bolsaTotal(){return totalSancionGlobal()+totalPagosMensuales()+totalSalidasAnticipadas()+totalSancExtraTotal();}
+
 function buildTypeGrid(){
   document.getElementById('type-grid').innerHTML=TIPOS.map(t=>
     `<button class="type-btn ${t.id===state.selectedType?'selected':''}" onclick="selType(this,'${t.id}')"><i class="ti ${t.icon}"></i>${t.label}</button>`).join('');
@@ -361,19 +348,17 @@ function calcRitmo(){
   const tiempo=parseFloat(document.getElementById('ritmo-tiempo').value)||0;
   const box=document.getElementById('ritmo-box');const result=document.getElementById('ritmo-result');
   if(!dist||!tiempo){result.innerHTML='';return;}
-  const tipo=state.selectedType;
-  const maxRitmo=tipo==='Caminata'?12.86:9.0;const minKm=tipo==='Caminata'?3.5:5.0;
+  const tipo=state.selectedType;const maxRitmo=tipo==='Caminata'?12.86:9.0;const minKm=tipo==='Caminata'?3.5:5.0;
   const ritmo=tiempo/dist;const mins=Math.floor(ritmo);const secs=Math.round((ritmo-mins)*60);
   const ritmoStr=mins+':'+(secs<10?'0':'')+secs+' min/km';
-  const refStr=tipo==='Caminata'?'Mín 3.5 km · máx 12:51 min/km':'Mín 5 km · máx 9:00 min/km';
+  const refStr=tipo==='Caminata'?'M\u00edn 3.5 km \u00b7 m\u00e1x 12:51 min/km':'M\u00edn 5 km \u00b7 m\u00e1x 9:00 min/km';
   let bad=false,msg='';
-  if(dist<minKm){bad=true;msg='Distancia insuficiente: '+dist+' km (mínimo '+minKm+' km)';}
+  if(dist<minKm){bad=true;msg='Distancia insuficiente: '+dist+' km (m\u00ednimo '+minKm+' km)';}
   else if(ritmo>maxRitmo){bad=true;msg='Ritmo muy lento: '+ritmoStr;}
-  else{msg='Ritmo '+ritmoStr+' ✓';}
+  else{msg='Ritmo '+ritmoStr+' \u2713';}
   box.className='ritmo-box show'+(bad?' bad':'');
   result.innerHTML='<div class="ritmo-value" style="color:'+(bad?'var(--red)':'var(--green)')+'">'+ritmoStr+'</div><div class="ritmo-msg" style="color:'+(bad?'var(--red)':'var(--green)')+'">'+msg+'</div><div class="ritmo-ref">'+refStr+'</div>';
-  if(bad)document.getElementById('c1').classList.remove('checked');
-  else document.getElementById('c1').classList.add('checked');
+  if(bad)document.getElementById('c1').classList.remove('checked');else document.getElementById('c1').classList.add('checked');
   updateStatus();
 }
 function selType(btn,id){
@@ -390,13 +375,13 @@ function selType(btn,id){
 function toggle(id){document.getElementById(id).classList.toggle('checked');updateStatus();}
 function isChecked(id){return document.getElementById(id).classList.contains('checked');}
 function calcStatus(){
-  if(!isChecked('c4'))return{s:'Inválido',cls:'s-bad',icon:'ti-ban',reasons:['Actividad manual o editada']};
+  if(!isChecked('c4'))return{s:'Inv\u00e1lido',cls:'s-bad',icon:'ti-ban',reasons:['Actividad manual o editada']};
   let reasons=[];
   if(!isChecked('c1'))reasons.push('Tiempo menor a 45 minutos en Strava');
   if(!isChecked('c2'))reasons.push('Sin foto de evidencia (lugar + selfie)');
   if(!isChecked('c3'))reasons.push('Actividad no visible en Strava');
   if(reasons.length>0)return{s:'Incompleto',cls:'s-inc',icon:'ti-alert-triangle',reasons};
-  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['étricas incoherentes']};
+  if(!isChecked('c5'))return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['M\u00e9tricas incoherentes']};
   return{s:'Completado',cls:'s-ok',icon:'ti-circle-check',reasons:[]};
 }
 function updateStatus(){
@@ -423,7 +408,7 @@ async function guardar(){
   const member=state.members[parseInt(mi)];
   if(type==='Yoga Casa'){
     let yc=0;for(let dd=0;dd<7;dd++){const e=getEntry(member,semana,dd);if(e&&e.tipo==='Yoga Casa')yc++;}
-    if(yc>=1){toast('Yoga en casa: máx 1 día/semana',false);return;}
+    if(yc>=1){toast('Yoga en casa: m\u00e1x 1 d\u00eda/semana',false);return;}
   }
   const res=calcStatus();
   const entry={participante:member,semana,dia:d,fecha,tipo:type,status:res.s,chk_tiempo:isChecked('c1'),chk_foto:isChecked('c2'),chk_visible:isChecked('c3'),chk_manual:isChecked('c4'),chk_metricas:isChecked('c5'),notas,evidencia_url:state.evidenceData?'[imagen adjunta]':'',razones:res.reasons.join(' | ')};
@@ -433,7 +418,7 @@ async function guardar(){
   btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> Guardar en el reto';
   const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===semana&&+e.dia===d);
   if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
-  toast(res.s==='Completado'?member+' — guardado':member+' — '+res.s);
+  toast(res.s==='Completado'?member+' \u2014 guardado':member+' \u2014 '+res.s);
   document.getElementById('reg-notas').value='';clearEv();
   ['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).classList.add('checked'));
   updateStatus();
@@ -448,17 +433,17 @@ function go(id,btn){
 function openDayDetail(member,mi,w,d,eIdx){
   const entry=eIdx>=0?state.entries[eIdx]:null;
   document.getElementById('modal-title').textContent=member;
-  document.getElementById('modal-sub').textContent='Semana '+w+' — '+DIAS_FULL[d]+(entry&&entry.fecha?' · '+entry.fecha:'');
+  document.getElementById('modal-sub').textContent='Semana '+w+' \u2014 '+DIAS_FULL[d]+(entry&&entry.fecha?' \u00b7 '+entry.fecha:'');
   let body='';
-  if(!entry){body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registró actividad este día</small></div></div>';}
+  if(!entry){body='<div class="detail-row"><div class="detail-icon bad"><i class="ti ti-x"></i></div><div class="detail-text">Sin registro<small>No se registr\u00f3 actividad este d\u00eda</small></div></div>';}
   else{
     const sc=entry.status==='Completado'?'ok':'bad';
-    body+='<div class="detail-row"><div class="detail-icon '+sc+'"><i class="ti ti-'+(entry.status==='Completado'?'circle-check':'alert-triangle')+'"></i></div><div class="detail-text"><strong>'+entry.status+'</strong><small>Actividad: '+(entry.tipo||'—')+'</small></div></div>';
-    [{key:'chk_tiempo',ok:'45 min o más en Strava',bad:'Menos de 45 minutos'},
+    body+='<div class="detail-row"><div class="detail-icon '+sc+'"><i class="ti ti-'+(entry.status==='Completado'?'circle-check':'alert-triangle')+'"></i></div><div class="detail-text"><strong>'+entry.status+'</strong><small>Actividad: '+(entry.tipo||'\u2014')+'</small></div></div>';
+    [{key:'chk_tiempo',ok:'45 min o m\u00e1s en Strava',bad:'Menos de 45 minutos'},
      {key:'chk_foto',ok:'Foto del lugar + selfie subida',bad:'Sin foto de evidencia'},
      {key:'chk_visible',ok:'Actividad visible en Strava',bad:'Actividad no visible'},
-     {key:'chk_manual',ok:'Registrada directo en Strava',bad:'Manual o editada — no válida'},
-     {key:'chk_metricas',ok:'Métricas coherentes',bad:'Métricas incoherentes'}
+     {key:'chk_manual',ok:'Registrada directo en Strava',bad:'Manual o editada \u2014 no v\u00e1lida'},
+     {key:'chk_metricas',ok:'M\u00e9tricas coherentes',bad:'M\u00e9tricas incoherentes'}
     ].forEach(c=>{
       const isOk=entry[c.key]===true||entry[c.key]==='TRUE'||entry[c.key]==='true';
       body+='<div class="detail-row"><div class="detail-icon '+(isOk?'ok':'bad')+'"><i class="ti ti-'+(isOk?'check':'x')+'"></i></div><div class="detail-text">'+(isOk?c.ok:c.bad)+'</div></div>';
@@ -476,101 +461,68 @@ function renderWeekTabs(){
     '<button class="week-tab '+(i+1===state.currentWeek?'active':'')+'" onclick="selectWeek('+(i+1)+',this)">S'+(i+1)+'</button>').join('');
 }
 function selectWeek(w,btn){state.currentWeek=w;document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('reg-semana').value=w;renderSemanaContent();}
-function dotClass(e){if(!e)return'bad';if(e.status==='Completado')return'ok';if(['Incompleto','Sospechoso','Inválido'].includes(e.status))return'inc';return'bad';}
+function dotClass(e){if(!e)return'bad';if(e.status==='Completado')return'ok';if(['Incompleto','Sospechoso','Inv\u00e1lido'].includes(e.status))return'inc';return'bad';}
 function dotIcon(dc){if(dc==='ok')return'check';if(dc==='inc')return'alert-triangle';return'x';}
 function renderSemanaContent(){
   const w=state.currentWeek;
   const members=activeMembers();
-  const summary=members.map((m,mi)=>({m,mi:state.members.indexOf(m),ok:diasCumplidos(m,w),noComp:diasNoComp(m,w),falta:diasFalta(m,w),tf:tieneFalta(m,w)}));
+  const summary=members.map((m)=>({m,mi:state.members.indexOf(m),ok:diasCumplidos(m,w),noComp:diasNoComp(m,w),falta:diasFalta(m,w),tf:tieneFalta(m,w)}));
   const conFalta=summary.filter(x=>x.tf).length;
   const porCobrar=summary.reduce((s,x)=>s+(x.tf?x.falta*SANCION:0),0);
-  let html='<div class="metrics-row"><div class="metric"><div class="metric-label">Con sanción</div><div class="metric-value">'+conFalta+'</div><div class="metric-sub">más de 2 faltas</div></div><div class="metric"><div class="metric-label">Generado</div><div class="metric-value" style="color:var(--red)">$'+porCobrar.toLocaleString()+'</div><div class="metric-sub">esta semana</div></div></div>';
-  html+='<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier día para ver el detalle</div>';
+  let html='<div class="metrics-row"><div class="metric"><div class="metric-label">Con sanci\u00f3n</div><div class="metric-value">'+conFalta+'</div><div class="metric-sub">m\u00e1s de 2 faltas</div></div><div class="metric"><div class="metric-label">Generado</div><div class="metric-value" style="color:var(--red)">$'+porCobrar.toLocaleString()+'</div><div class="metric-sub">esta semana</div></div></div>';
+  html+='<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca cualquier d\u00eda para ver el detalle</div>';
   html+='<div class="day-grid">'+DIAS.map(d=>'<div class="day-cell"><div class="day-label">'+d+'</div></div>').join('')+'</div>';
   const filtered=semanaFilter==='falta'?summary.filter(x=>x.tf):summary;
-  if(filtered.length===0){html+='<div style="text-align:center;padding:2rem;color:var(--text-3);font-size:13px"><i class="ti ti-confetti" style="font-size:32px;display:block;margin-bottom:8px"></i>¡Todos cumplen esta semana!</div>';document.getElementById('semana-content').innerHTML=html;return;}
+  if(filtered.length===0){html+='<div style="text-align:center;padding:2rem;color:var(--text-3);font-size:13px"><i class="ti ti-confetti" style="font-size:32px;display:block;margin-bottom:8px"></i>\u00a1Todos cumplen esta semana!</div>';document.getElementById('semana-content').innerHTML=html;return;}
   html+=filtered.map(({m,mi,ok,noComp,falta,tf})=>{
     const dots=Array.from({length:7},(_,d)=>{
       const e=getEntry(m,w,d);const dc=dotClass(e);const eIdx=e?state.entries.indexOf(e):-1;
-      return'<div class="day-cell"><div class="day-dot '+dc+'" onclick="openDayDetail(''+m.replace(/'/g,"\'")+'','+mi+','+w+','+d+','+eIdx+')"><i class="ti ti-'+dotIcon(dc)+'" style="font-size:7px"></i></div></div>';
+      return'<div class="day-cell"><div class="day-dot '+dc+'" onclick="openDayDetail(\''+m.replace(/'/g,"\\'")+'\','+mi+','+w+','+d+','+eIdx+')"><i class="ti ti-'+dotIcon(dc)+'" style="font-size:7px"></i></div></div>';
     }).join('');
-    const badge=tf?'<span class="badge b-bad">+$'+falta*SANCION+' ('+(noComp-FALTAS_PERMITIDAS)+' de más)</span>':'<span class="badge b-ok">Cumple</span>';
-    return'<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">'+ok+'/'+MIN_DIAS+' días · '+noComp+' incompleto'+(noComp!==1?'s':'')+(noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':'')+'</div></div></div>'+badge+'</div><div class="day-grid" style="margin-bottom:0">'+dots+'</div></div>';
+    const badge=tf?'<span class="badge b-bad">+$'+falta*SANCION+' ('+(noComp-FALTAS_PERMITIDAS)+' de m\u00e1s)</span>':'<span class="badge b-ok">Cumple</span>';
+    return'<div class="member-card"><div class="member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">'+ok+'/'+MIN_DIAS+' d\u00edas \u00b7 '+noComp+' incompleto'+(noComp!==1?'s':'')+(noComp>FALTAS_PERMITIDAS?' ('+FALTAS_PERMITIDAS+' permitidas)':'')+'</div></div></div>'+badge+'</div><div class="day-grid" style="margin-bottom:0">'+dots+'</div></div>';
   }).join('');
   document.getElementById('semana-content').innerHTML=html;
 }
 function renderSemana(){renderWeekTabs();renderSemanaContent();}
 function toggleSancPago(member,w,d){
-  const k=member+'|S'+w+'D'+d;
-  state.sancPagos[k]=!state.sancPagos[k];
-  post({type:'sancPago',key:k,pagado:state.sancPagos[k]});
-  renderSanciones();
+  const k=member+'|S'+w+'D'+d;state.sancPagos[k]=!state.sancPagos[k];
+  post({type:'sancPago',key:k,pagado:state.sancPagos[k]});renderSanciones();
 }
 function toggleSancExtra(member){
   const cur=state.sancExtra[member]||'';
-  let next;
-  if(cur==='')next='debe';
-  else if(cur==='debe')next='pagado';
-  else next='debe';
+  const next=cur===''?'debe':cur==='debe'?'pagado':'debe';
   state.sancExtra[member]=next;
-  post({type:'sancExtra',participante:member,status:next});
-  renderSanciones();
+  post({type:'sancExtra',participante:member,status:next});renderSanciones();
 }
 function renderSanciones(){
-  const bolsa=bolsaTotal();
-  const totalSanc=totalSancionGlobal();
-  const totalPagos=totalPagosMensuales();
-  const totalBajas=totalSalidasAnticipadas();
-  const extraTotal=totalSancExtraTotal();
-  const extraPagado=totalSancExtraEnBolsa();
-  const extraPend=totalSancExtraPendiente();
-  const porMember=state.members.map((m,mi)=>{
-    const sancion=totalSancion(m);const pagado=totalSancionPagada(m);
-    return{m,mi,sancion,pagado,faltas:totalFaltas(m)};
-  }).filter(x=>x.sancion>0).sort((a,b)=>b.sancion-a.sancion);
-
+  const bolsa=bolsaTotal();const totalSanc=totalSancionGlobal();const totalPagos=totalPagosMensuales();
+  const totalBajas=totalSalidasAnticipadas();const extraTotal=totalSancExtraTotal();
+  const extraPagado=totalSancExtraEnBolsa();const extraPend=totalSancExtraPendiente();
+  const porMember=state.members.map((m,mi)=>({m,mi,sancion:totalSancion(m),pagado:totalSancionPagada(m),faltas:totalFaltas(m)})).filter(x=>x.sancion>0).sort((a,b)=>b.sancion-a.sancion);
   let html='<div class="bolsa-banner"><div><div class="bolsa-label">Bolsa acumulada</div><div class="bolsa-amount">$'+bolsa.toLocaleString()+'</div><div class="bolsa-sublabel">sanciones + pagos + bajas + extra</div></div><i class="ti ti-trophy" style="font-size:40px;color:#97C459;margin-left:auto"></i></div>';
   html+='<div class="metrics-row"><div class="metric"><div class="metric-label">Sanciones</div><div class="metric-value" style="color:var(--red)">$'+totalSanc.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Pagos mensuales</div><div class="metric-value" style="color:var(--green)">$'+totalPagos.toLocaleString()+'</div></div></div>';
-  html+='<div class="metrics-row"><div class="metric"><div class="metric-label">Total por bajas</div><div class="metric-value" style="color:var(--red)">$'+totalBajas.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Sanción extraoficial</div><div class="metric-value" style="color:var(--amber)">$'+extraTotal.toLocaleString()+'</div><div class="metric-sub">$'+extraPagado.toLocaleString()+' pagado · $'+extraPend.toLocaleString()+' pendiente</div></div></div>';
-
-  // FIX 2: extra sanction - 3 states: sin marcar → debe → pagado → debe (cycle)
-  html+='<div class="section-label">Sanción extraoficial S1 ($200)</div>';
-  html+='<div class="card"><div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Toca el botón para cambiar el estado: <strong>Sin marcar → Debe → Pagado</strong>. Solo las marcadas suman a la bolsa.</div>';
+  html+='<div class="metrics-row"><div class="metric"><div class="metric-label">Total por bajas</div><div class="metric-value" style="color:var(--red)">$'+totalBajas.toLocaleString()+'</div></div><div class="metric"><div class="metric-label">Sanci\u00f3n extraoficial</div><div class="metric-value" style="color:var(--amber)">$'+extraTotal.toLocaleString()+'</div><div class="metric-sub">$'+extraPagado.toLocaleString()+' pagado \u00b7 $'+extraPend.toLocaleString()+' pendiente</div></div></div>';
+  html+='<div class="section-label">Sanci\u00f3n extraoficial S1 ($200)</div>';
+  html+='<div class="card"><div style="font-size:12px;color:var(--text-3);margin-bottom:10px">Toca para cambiar: <strong>Sin marcar \u2192 Debe \u2192 Pagado</strong></div>';
   html+=state.members.map((m,i)=>{
-    const status=state.sancExtra[m]||'';
-    const pagado=status==='pagado';const debe=status==='debe';
-    let btnClass=pagado?'active-paid':debe?'active-pend':'';
-    let btnLabel=pagado?'<i class="ti ti-check"></i> Pagó':debe?'Pendiente de pago':'Sin sanción';
-    let statusLabel=pagado?'<span style="font-size:10px;color:var(--green);margin-right:4px">$200 pagado</span>':debe?'<span style="font-size:10px;color:var(--amber);margin-right:4px">Debe $200</span>':'';
-    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500">'+m+'</span>'+statusLabel+'</div></div><button class="pago-btn '+btnClass+'" onclick="toggleSancExtra(''+m.replace(/'/g,"\'")+'')" style="white-space:nowrap">'+btnLabel+'</button></div>';
+    const status=state.sancExtra[m]||'';const pagado=status==='pagado';const debe=status==='debe';
+    const btnClass=pagado?'active-paid':debe?'active-pend':'';
+    const btnLabel=pagado?'<i class="ti ti-check"></i> Pag\u00f3':debe?'Pendiente':'Sin sanci\u00f3n';
+    const statusLabel=pagado?'<span style="font-size:10px;color:var(--green)"> $200 pagado</span>':debe?'<span style="font-size:10px;color:var(--amber)"> Debe $200</span>':'';
+    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500">'+m+'</span>'+statusLabel+'</div></div><button class="pago-btn '+btnClass+'" onclick="toggleSancExtra(\''+m.replace(/'/g,"\\'")+'\')">'+btnLabel+'</button></div>';
   }).join('');
   html+='</div>';
-
-  // FIX 2: sanction day rows - always visible, no collapse needed
-  html+='<div class="section-label">Pagos de sanciones por día</div>';
-  if(porMember.length===0){
-    html+='<div class="card"><p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones aún — ¡todos van bien!</p></div>';
-  } else {
+  html+='<div class="section-label">Pagos de sanciones por d\u00eda</div>';
+  if(porMember.length===0){html+='<div class="card"><p style="font-size:13px;color:var(--text-3);padding:6px 0">Sin sanciones a\u00fan \u2014 \u00a1todos van bien!</p></div>';}
+  else{
     html+=porMember.map(({m,mi,sancion,pagado,faltas})=>{
       let daysHtml='';
-      for(let w=1;w<=SEMANAS;w++){
-        let dayCount=0;
-        for(let d=0;d<7;d++){
-          const e=getEntry(m,w,d);
-          if(e&&['Incompleto','Inválido','Sospechoso'].includes(e.status)){
-            dayCount++;
-            if(dayCount>FALTAS_PERMITIDAS){
-              const k=m+'|S'+w+'D'+d;const isPaid=!!state.sancPagos[k];
-              daysHtml+='<div class="sancion-day-row"><div><span style="font-weight:600;color:var(--text)">S'+w+' · '+DIAS_FULL[d]+'</span><small style="display:block;font-size:10px;color:var(--text-3)">'+(e.tipo||'')+' · '+e.status+'</small></div><button class="pago-btn '+(isPaid?'active-paid':'active-pend')+'" onclick="toggleSancPago(''+m.replace(/'/g,"\'")+'',' +w+','+d+')">'+(isPaid?'<i class="ti ti-check"></i> Pagado $200':'Pendiente $200')+'</button></div>';
-            }
-          }
-        }
-      }
+      for(let w=1;w<=SEMANAS;w++){let dc=0;for(let d=0;d<7;d++){const e=getEntry(m,w,d);if(e&&['Incompleto','Inv\u00e1lido','Sospechoso'].includes(e.status)){dc++;if(dc>FALTAS_PERMITIDAS){const k=m+'|S'+w+'D'+d;const isPaid=!!state.sancPagos[k];daysHtml+='<div class="sancion-day-row"><div><span style="font-weight:600;color:var(--text)">S'+w+' \u00b7 '+DIAS_FULL[d]+'</span><small style="display:block;font-size:10px;color:var(--text-3)">'+(e.tipo||'')+' \u00b7 '+e.status+'</small></div><button class="pago-btn '+(isPaid?'active-paid':'active-pend')+'" onclick="toggleSancPago(\''+m.replace(/'/g,"\\'")+'\','+w+','+d+')">'+(isPaid?'<i class="ti ti-check"></i> Pagado $200':'Pendiente $200')+'</button></div>';}}}}
       const pendiente=sancion-pagado;
-      return'<div class="sancion-member-block"><div class="sancion-member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">$'+sancion.toLocaleString()+' total · $'+pagado.toLocaleString()+' pagado</div></div></div>'+( pendiente>0?'<span class="sanc-amount">$'+pendiente.toLocaleString()+' pendiente</span>':'<span style="font-size:12px;color:var(--green);font-weight:600">Al corriente ✓</span>')+'</div>'+daysHtml+'</div>';
+      return'<div class="sancion-member-block"><div class="sancion-member-header"><div class="member-left"><div class="avatar" style="background:'+color(mi)+'">'+initials(m)+'</div><div><div class="member-name">'+m+'</div><div class="member-sub">$'+sancion.toLocaleString()+' total \u00b7 $'+pagado.toLocaleString()+' pagado</div></div></div>'+(pendiente>0?'<span class="sanc-amount">$'+pendiente.toLocaleString()+' pendiente</span>':'<span style="font-size:12px;color:var(--green);font-weight:600">Al corriente \u2713</span>')+'</div>'+daysHtml+'</div>';
     }).join('');
   }
-
   document.getElementById('sanciones-content').innerHTML=html;
 }
 function togglePago(member,mes){
@@ -584,10 +536,10 @@ function renderPagos(){
   let html='';
   MESES.forEach(mes=>{
     const pagados=state.members.filter(m=>state.pagos[m+'|'+mes]==='pagado').length;
-    html+='<div class="card"><div class="month-header"><span>'+mes+' 2026</span><span class="month-summary">'+pagados+' pagaron · '+(state.members.length-pagados)+' pendientes</span></div>';
+    html+='<div class="card"><div class="month-header"><span>'+mes+' 2026</span><span class="month-summary">'+pagados+' pagaron \u00b7 '+(state.members.length-pagados)+' pendientes</span></div>';
     html+=state.members.map((m,i)=>{
       const pagado=state.pagos[m+'|'+mes]==='pagado';const inactivo=!!state.salidas[m];
-      return'<div class="pago-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><span style="font-size:13px;font-weight:500">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</span></div><button class="pago-btn '+(pagado?'active-paid':'active-pend')+'" onclick="togglePago(''+m.replace(/'/g,"\'")+'',''+mes+'')">'+(pagado?'<i class="ti ti-check"></i> Pagó':'Pendiente')+'</button></div>';
+      return'<div class="pago-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px">'+initials(m)+'</div><span style="font-size:13px;font-weight:500">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</span></div><button class="pago-btn '+(pagado?'active-paid':'active-pend')+'" onclick="togglePago(\''+m.replace(/'/g,"\\'")+'\',\''+mes+'\')">'+(pagado?'<i class="ti ti-check"></i> Pag\u00f3':'Pendiente')+'</button></div>';
     }).join('');
     html+='</div>';
   });
@@ -605,14 +557,14 @@ function renderSalidas(){
   document.getElementById('salidas-total-members').textContent=state.members.length;
   document.getElementById('salidas-content').innerHTML=state.members.map((m,i)=>{
     const salio=!!state.salidas[m];
-    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px;'+(salio?'opacity:.6':'')+'">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500;'+(salio?'color:var(--text-3)':'')+'">'+m+'</span>'+(salio?'<div style="font-size:10px;color:var(--red)">Baja el '+state.salidas[m].fecha+' · $1,000 a la bolsa</div>':'')+'</div></div><button class="pago-btn '+(salio?'active-pend':'active-paid')+'" onclick="toggleSalida(''+m.replace(/'/g,"\'")+'''+')">'+(salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo')+'</button></div>';
+    return'<div class="pago-row"><div class="member-left"><div class="avatar" style="background:'+color(i)+';width:28px;height:28px;font-size:11px;'+(salio?'opacity:.6':'')+'">'+initials(m)+'</div><div><span style="font-size:13px;font-weight:500;'+(salio?'color:var(--text-3)':'')+'">'+m+'</span>'+(salio?'<div style="font-size:10px;color:var(--red)">Baja el '+state.salidas[m].fecha+' \u00b7 $1,000 a la bolsa</div>':'')+'</div></div><button class="pago-btn '+(salio?'active-pend':'active-paid')+'" onclick="toggleSalida(\''+m.replace(/'/g,"\\'")+'\''+')">'+(salio?'<i class="ti ti-x"></i> Dado de baja':'<i class="ti ti-check"></i> Activo')+'</button></div>';
   }).join('');
 }
 function renderEquipo(){
-  document.getElementById('equipo-count').textContent='('+state.members.length+' total · '+activeMembers().length+' activos)';
+  document.getElementById('equipo-count').textContent='('+state.members.length+' total \u00b7 '+activeMembers().length+' activos)';
   document.getElementById('equipo-lista').innerHTML=state.members.map((m,i)=>{
     const inactivo=!!state.salidas[m];let f=0;for(let w=1;w<=SEMANAS;w++)f+=diasFalta(m,w);
-    return'<div class="team-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+'">'+initials(m)+'</div><div><div class="member-name">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</div><div class="member-sub">'+f+' día'+(f!==1?'s':'')+' con sanción · $'+(f*SANCION).toLocaleString()+'</div></div></div><button class="btn-del" onclick="removeMember('+i+')"><i class="ti ti-trash"></i></button></div>';
+    return'<div class="team-row" style="'+(inactivo?'opacity:.5':'')+'"><div class="member-left"><div class="avatar" style="background:'+color(i)+'">'+initials(m)+'</div><div><div class="member-name">'+m+(inactivo?' <span class="inactive-badge">Baja</span>':'')+'</div><div class="member-sub">'+f+' d\u00eda'+(f!==1?'s':'')+' con sanci\u00f3n \u00b7 $'+(f*SANCION).toLocaleString()+'</div></div></div><button class="btn-del" onclick="removeMember('+i+')"><i class="ti ti-trash"></i></button></div>';
   }).join('');
 }
 function addMember(){
@@ -626,13 +578,19 @@ function removeMember(i){
 }
 function populateSelects(){
   const ms=document.getElementById('reg-member');const cur=ms.value;
-  ms.innerHTML='<option value="">— Selecciona —</option>'+activeMembers().map(m=>{const i=state.members.indexOf(m);return'<option value="'+i+'">'+m+'</option>';}).join('');
+  ms.innerHTML='<option value="">\u2014 Selecciona \u2014</option>'+activeMembers().map(m=>{const i=state.members.indexOf(m);return'<option value="'+i+'">'+m+'</option>';}).join('');
   ms.value=cur;
   document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===state.currentWeek?'selected':'')+'>Semana '+(i+1)+'</option>').join('');
 }
+
+// INIT: UI loads immediately, data syncs in background after 500ms
 document.getElementById('reg-fecha').value=new Date().toISOString().split('T')[0];
-buildTypeGrid();populateSelects();updateStatus();
-loadData();setInterval(loadData,60000);
+buildTypeGrid();
+populateSelects();
+updateStatus();
+renderSemana();
+setTimeout(()=>loadData(), 500);
+setInterval(loadData, 60000);
 </script>
 </body>
 </html>

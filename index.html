@@ -257,7 +257,7 @@ html,body{height:100%;background:var(--bg);font-family:'Barlow',sans-serif;color
   </div>
 </div>
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbytGu4wNv_I1CkpER2VhCakKpsu1s8tdrnnK01M_LitjSKCpr5dU4bv9P2YP8mHqV7u/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz_pVvqPQi3g4UkWbd2P4IRMzNdfN6phm89XhAelhJeA-b6SOR_PzZLCRNqpTTJjitk/exec';
 const SEMANAS=13,MIN_DIAS=5,SANCION=200,FALTAS_PERMITIDAS=2;
 const DIAS=['D','L','M','M','J','V','S'];
 const DIAS_FULL=['Domingo','Lunes','Martes','Mi\u00e9rcoles','Jueves','Viernes','S\u00e1bado'];
@@ -583,8 +583,20 @@ function populateSelects(){
   document.getElementById('reg-semana').innerHTML=Array.from({length:SEMANAS},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===state.currentWeek?'selected':'')+'>Semana '+(i+1)+'</option>').join('');
 }
 
+// Calculate current week based on reto start (Sunday May 31, 2026)
+function getCurrentWeek(){
+  const start=new Date('2026-05-31T00:00:00');
+  const now=new Date();
+  const diffMs=now-start;
+  if(diffMs<0)return 1;
+  const diffDays=Math.floor(diffMs/(1000*60*60*24));
+  const week=Math.floor(diffDays/7)+1;
+  return Math.min(Math.max(week,1),SEMANAS);
+}
+
 // INIT: UI loads immediately, data syncs in background after 500ms
 document.getElementById('reg-fecha').value=new Date().toISOString().split('T')[0];
+state.currentWeek=getCurrentWeek();
 buildTypeGrid();
 populateSelects();
 updateStatus();

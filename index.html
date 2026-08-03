@@ -284,15 +284,37 @@ let state={
 };
 
 function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// CRITICAL FIX: loadData runs fully async - never blocks UI
-async function loadData(){
-  setSyncStatus('loading','Sincronizando...');
+// Cola de operaciones pendientes: si un guardado falla, se reintenta solo,
+// nunca se pierde el registro solo porque el internet fall\u00f3 un instante.
+let pendingQueue=[];
+let flushingQueue=false;
+let lastSyncOk=null;
+
+// Intenta un fetch con timeout m\u00e1s tolerante (25s, la conexi\u00f3n al Apps Script
+// a veces tarda por "cold start"). Si falla, reintenta hasta 2 veces m\u00e1s
+// con una breve espera, en vez de reportar error a la primera.
+async function fetchConReintentos(opts,intentos=3,timeoutMs=25000){
+  let lastErr=null;
+  for(let i=0;i<intentos;i++){
+    if(i>0)await sleep(1200*i); // espera creciente entre intentos
+    try{
+      const controller=new AbortController();
+      const tid=setTimeout(()=>controller.abort(),timeoutMs);
+      const res=await fetch(SCRIPT_URL,{...opts,signal:controller.signal});
+      clearTimeout(tid);
+      return res;
+    }catch(e){lastErr=e;}
+  }
+  throw lastErr;
+}
+
+async function loadData(silent){
+  if(!silent)setSyncStatus('loading','Sincronizando...');
+  if(navigator.onLine===false){setSyncStatus('err','Sin internet');return;}
   try{
-    const controller=new AbortController();
-    const tid=setTimeout(()=>controller.abort(),15000);
-    const res=await fetch(SCRIPT_URL,{signal:controller.signal});
-    clearTimeout(tid);
+    const res=await fetchConReintentos({method:'GET'});
     const json=await res.json();
     if(json.ok&&json.data){
       const d=json.data;
@@ -302,18 +324,68 @@ async function loadData(){
       if(d.salidas){state.salidas={};d.salidas.forEach(s=>{if(s.participante)state.salidas[s.participante]={fecha:s.fecha};});}
       if(d.sancPagos){state.sancPagos={};d.sancPagos.forEach(p=>{if(p.key)state.sancPagos[p.key]=p.pagado==='true'||p.pagado===true;});}
       if(d.sancExtra){state.sancExtra={};d.sancExtra.forEach(p=>{if(p.participante)state.sancExtra[p.participante]=p.status;});}
-      populateSelects();setSyncStatus('ok','Sincronizado');
-    }else setSyncStatus('err','Error al cargar');
+      populateSelects();
+      lastSyncOk=new Date();
+      setSyncStatus('ok','Sincronizado');
+      // Refresca la vista activa para que los cambios se vean sin recargar
+      const active=document.querySelector('.screen.active');
+      if(active){
+        if(active.id==='screen-semana')renderSemanaContent();
+        else if(active.id==='screen-sanciones')renderSanciones();
+        else if(active.id==='screen-pagos')renderPagos();
+        else if(active.id==='screen-salidas')renderSalidas();
+        else if(active.id==='screen-equipo')renderEquipo();
+      }
+    }else{
+      setSyncStatus('err','Respuesta inv\u00e1lida del servidor');
+    }
   }catch(e){
-    if(e.name==='AbortError')setSyncStatus('err','Sin respuesta');
-    else setSyncStatus('err','Sin conexi\u00f3n');
+    const label=lastSyncOk?('Sin conexi\u00f3n \u00b7 \u00faltima sync '+lastSyncOk.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})):'Sin conexi\u00f3n';
+    setSyncStatus('err',label);
   }
 }
 
-async function post(body){
-  try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});setSyncStatus('ok','Guardado');}
-  catch(e){setSyncStatus('err','Error al guardar');}
+// post ahora reintenta autom\u00e1ticamente y, si a\u00fan as\u00ed falla, deja la operaci\u00f3n
+// en una cola para reenviarla sola en cuanto vuelva la conexi\u00f3n (cada 15s o
+// al recuperar el evento 'online'). As\u00ed ning\u00fan registro se pierde por un corte breve.
+async function post(body,opts){
+  opts=opts||{};
+  setSyncStatus('loading','Guardando...');
+  try{
+    const res=await fetchConReintentos({method:'POST',body:JSON.stringify(body)},3,20000);
+    let ok=true;
+    try{const json=await res.json();if(json&&json.ok===false)ok=false;}catch(_e){/* respuesta no-JSON: se asume aceptada */}
+    if(!ok)throw new Error('server-rejected');
+    setSyncStatus('ok','Guardado');
+    return true;
+  }catch(e){
+    pendingQueue.push(body);
+    setSyncStatus('err','Sin conexi\u00f3n \u2014 '+pendingQueue.length+' pendiente(s) en cola');
+    if(!opts.silentToast)toast('Sin conexi\u00f3n: se guardar\u00e1 autom\u00e1ticamente al reconectar',false);
+    scheduleQueueFlush();
+    return false;
+  }
 }
+
+function scheduleQueueFlush(){
+  if(flushingQueue)return;
+  flushingQueue=true;
+  setTimeout(flushQueue,8000);
+}
+async function flushQueue(){
+  flushingQueue=false;
+  if(pendingQueue.length===0)return;
+  if(navigator.onLine===false){scheduleQueueFlush();return;}
+  const toSend=pendingQueue.slice();
+  pendingQueue=[];
+  for(const body of toSend){
+    const okSend=await post(body,{silentToast:true});
+    if(!okSend){ /* post ya la volvi\u00f3 a encolar */ }
+  }
+  if(pendingQueue.length===0)toast('Todo sincronizado \u2713');
+}
+window.addEventListener('online',()=>{setSyncStatus('loading','Reconectando...');flushQueue();loadData(true);});
+window.addEventListener('offline',()=>setSyncStatus('err','Sin internet'));
 
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 function color(i){return COLORS[i%COLORS.length];}
@@ -414,11 +486,12 @@ async function guardar(){
   const entry={participante:member,semana,dia:d,fecha,tipo:type,status:res.s,chk_tiempo:isChecked('c1'),chk_foto:isChecked('c2'),chk_visible:isChecked('c3'),chk_manual:isChecked('c4'),chk_metricas:isChecked('c5'),notas,evidencia_url:state.evidenceData?'[imagen adjunta]':'',razones:res.reasons.join(' | ')};
   const btn=document.querySelector('.btn-save');
   btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Guardando...';
-  await post({type:'registro',data:entry});
+  const guardadoOk=await post({type:'registro',data:entry},{silentToast:true});
   btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> Guardar en el reto';
   const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===semana&&+e.dia===d);
   if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
-  toast(res.s==='Completado'?member+' \u2014 guardado':member+' \u2014 '+res.s);
+  if(guardadoOk)toast(res.s==='Completado'?member+' \u2014 guardado':member+' \u2014 '+res.s);
+  else toast(member+' \u2014 guardado localmente, se sincronizar\u00e1 solo',false);
   document.getElementById('reg-notas').value='';clearEv();
   ['c1','c2','c3','c4','c5'].forEach(id=>document.getElementById(id).classList.add('checked'));
   updateStatus();
@@ -429,6 +502,11 @@ function go(id,btn){
   document.getElementById('screen-'+id).classList.add('active');btn.classList.add('active');
   if(id==='semana')renderSemana();if(id==='sanciones')renderSanciones();
   if(id==='pagos')renderPagos();if(id==='salidas')renderSalidas();if(id==='equipo')renderEquipo();
+}
+function dateForWeekDay(w,d){
+  const start=new Date('2026-05-31T12:00:00');
+  const dt=new Date(start.getTime()+((w-1)*7+d)*86400000);
+  return dt.toISOString().split('T')[0];
 }
 function openDayDetail(member,mi,w,d,eIdx){
   const entry=eIdx>=0?state.entries[eIdx]:null;
@@ -450,10 +528,81 @@ function openDayDetail(member,mi,w,d,eIdx){
     });
     if(entry.notas)body+='<div class="detail-row"><div class="detail-icon ok"><i class="ti ti-notes"></i></div><div class="detail-text">Notas<small>'+entry.notas+'</small></div></div>';
   }
+  body+='<button class="btn-save" style="margin-top:14px" onclick="openQuickRegister(\''+member.replace(/'/g,"\\'")+'\','+mi+','+w+','+d+')"><i class="ti ti-'+(entry?'edit':'plus')+'"></i> '+(entry?'Editar este registro':'Registrar aqu\u00ed')+'</button>';
   document.getElementById('modal-body').innerHTML=body;
   document.getElementById('modal-overlay').classList.add('show');
 }
 function closeModal(e){if(!e||e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('show');}
+
+// ---- Registro r\u00e1pido directamente desde la vista de Semana ----
+let qr={member:null,mi:null,w:null,d:null,selectedType:'Carrera',checks:{c1:true,c2:true,c3:true,c4:true,c5:true},evidenceData:null};
+function openQuickRegister(member,mi,w,d){
+  const entry=getEntry(member,w,d);
+  qr={member,mi,w,d,selectedType:entry?entry.tipo:'Carrera',
+      checks:entry?{c1:!!entry.chk_tiempo,c2:!!entry.chk_foto,c3:!!entry.chk_visible,c4:!!entry.chk_manual,c5:!!entry.chk_metricas}:{c1:true,c2:true,c3:true,c4:true,c5:true},
+      evidenceData:null,notas:entry?entry.notas||'':''};
+  document.getElementById('modal-title').textContent=member;
+  document.getElementById('modal-sub').textContent='Semana '+w+' \u2014 '+DIAS_FULL[d]+' \u00b7 '+dateForWeekDay(w,d);
+  const typeGridHtml=TIPOS.map(t=>`<button type="button" class="type-btn ${t.id===qr.selectedType?'selected':''}" onclick="qrSelType(this,'${t.id}')"><i class="ti ${t.icon}"></i>${t.label}</button>`).join('');
+  const checkRow=(id,icon,label)=>`<div onclick="qrToggle('${id}')" class="check-row"><div class="check-label"><i class="ti ${icon}"></i>${label}</div><div class="check-box ${qr.checks[id]?'checked':''}" id="qr-${id}"><i class="ti ti-check"></i></div></div>`;
+  let html='<div class="card-title" style="margin-top:2px"><i class="ti ti-run"></i> Actividad</div>';
+  html+='<div class="type-grid" id="qr-type-grid">'+typeGridHtml+'</div>';
+  html+='<div class="warn-box" id="qr-type-warn"></div>';
+  html+='<div class="card-title" style="margin-top:16px"><i class="ti ti-checks"></i> Verificaci\u00f3n</div>';
+  html+=checkRow('c1','ti-clock','45 minutos o m\u00e1s en Strava');
+  html+=checkRow('c2','ti-camera','Foto del lugar + selfie subida');
+  html+=checkRow('c3','ti-eye','Actividad visible en Strava');
+  html+=checkRow('c4','ti-device-mobile','No es manual ni editada');
+  html+=checkRow('c5','ti-chart-line','M\u00e9tricas coherentes');
+  html+='<div class="field" style="margin-top:12px"><label>Notas</label><textarea id="qr-notas" placeholder="Aclaraciones...">'+(qr.notas||'')+'</textarea></div>';
+  html+='<div class="status-wrap"><div id="qr-status-preview"></div></div>';
+  html+='<button class="btn-save" style="margin-top:10px" onclick="guardarQuick()"><i class="ti ti-device-floppy"></i> Guardar este d\u00eda</button>';
+  document.getElementById('modal-body').innerHTML=html;
+  qrUpdateWarn();qrUpdateStatus();
+}
+function qrSelType(btn,id){
+  document.querySelectorAll('#qr-type-grid .type-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');qr.selectedType=id;qrUpdateWarn();qrUpdateStatus();
+}
+function qrUpdateWarn(){
+  const t=TIPOS.find(x=>x.id===qr.selectedType);const w=document.getElementById('qr-type-warn');
+  if(!w)return;
+  if(t&&t.warn){w.textContent=t.warn;w.classList.add('show');}else w.classList.remove('show');
+}
+function qrToggle(id){qr.checks[id]=!qr.checks[id];document.getElementById('qr-'+id).classList.toggle('checked');qrUpdateStatus();}
+function qrCalcStatus(){
+  if(!qr.checks.c4)return{s:'Inv\u00e1lido',cls:'s-bad',icon:'ti-ban',reasons:['Actividad manual o editada']};
+  let reasons=[];
+  if(!qr.checks.c1)reasons.push('Tiempo menor a 45 minutos en Strava');
+  if(!qr.checks.c2)reasons.push('Sin foto de evidencia (lugar + selfie)');
+  if(!qr.checks.c3)reasons.push('Actividad no visible en Strava');
+  if(reasons.length>0)return{s:'Incompleto',cls:'s-inc',icon:'ti-alert-triangle',reasons};
+  if(!qr.checks.c5)return{s:'Sospechoso',cls:'s-sus',icon:'ti-help-circle',reasons:['M\u00e9tricas incoherentes']};
+  return{s:'Completado',cls:'s-ok',icon:'ti-circle-check',reasons:[]};
+}
+function qrUpdateStatus(){
+  const r=qrCalcStatus();const el=document.getElementById('qr-status-preview');
+  if(el)el.innerHTML=`<span class="status-pill ${r.cls}"><i class="ti ${r.icon}"></i>${r.s}</span>`;
+}
+async function guardarQuick(){
+  const {member,mi,w,d}=qr;
+  const notas=(document.getElementById('qr-notas')?.value||'').trim();
+  if(qr.selectedType==='Yoga Casa'){
+    let yc=0;for(let dd=0;dd<7;dd++){if(dd===d)continue;const e=getEntry(member,w,dd);if(e&&e.tipo==='Yoga Casa')yc++;}
+    if(yc>=1){toast('Yoga en casa: m\u00e1x 1 d\u00eda/semana',false);return;}
+  }
+  const res=qrCalcStatus();
+  const fecha=dateForWeekDay(w,d);
+  const entry={participante:member,semana:w,dia:d,fecha,tipo:qr.selectedType,status:res.s,chk_tiempo:qr.checks.c1,chk_foto:qr.checks.c2,chk_visible:qr.checks.c3,chk_manual:qr.checks.c4,chk_metricas:qr.checks.c5,notas,evidencia_url:'',razones:res.reasons.join(' | ')};
+  const btn=document.querySelector('#modal-body .btn-save');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Guardando...';}
+  const guardadoOk=await post({type:'registro',data:entry},{silentToast:true});
+  const idx=state.entries.findIndex(e=>e.participante===member&&+e.semana===w&&+e.dia===d);
+  if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);
+  toast(guardadoOk?(member+' \u2014 '+res.s):(member+' \u2014 guardado localmente, se sincronizar\u00e1 solo'),guardadoOk);
+  closeModal();
+  renderSemanaContent();
+}
 let semanaFilter='todos';
 function setFilter(f,btn){semanaFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSemanaContent();}
 function renderWeekTabs(){
